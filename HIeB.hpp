@@ -13,7 +13,7 @@ public:
   // 设置场点的时空坐标
   void SetSpaceTime(double x, double y, double z, double t);
   // 设置场点的时空坐标(以另外一种坐标形式)
-  void SetSpaceTime_tau(double x, double y, double tau, double eta);
+  void SetSpaceTime_tau(double tau, double eta);
   
   // 设置与获取质心系能量
   void SetSqrtS(double sqrtS);
@@ -28,6 +28,10 @@ public:
   // 设置与获取碰撞参数
   void SetB(double b);
   double GetB() const;
+
+  // 设置与获取tau0
+  void SetTau0(double tau0);
+  double GetTau0() const;
   
   // 设置与获取核类型
   void SetNucleiType(std::string nuclei); // method to set nuclei parameters
@@ -39,6 +43,7 @@ public:
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标
   double meta, mtau; // 用eta和tau来表示z和t
+  double mtau0; // QGP形成时间
 
   double mb; // 碰撞参量
   double mGamma; // 洛伦兹收缩因子gamma
