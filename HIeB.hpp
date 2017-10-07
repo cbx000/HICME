@@ -14,6 +14,14 @@ public:
   void SetSpaceTime(double x, double y, double z, double t);
   // 设置场点的时空坐标(以另外一种坐标形式)
   void SetSpaceTime_tau(double tau, double eta);
+
+  // 获取坐标
+  double GetX() const;
+  double GetY() const;
+  double GetZ() const;
+  double GetT() const;
+  double GetEta() const;
+  double GetTau() const;
   
   // 设置与获取质心系能量
   void SetSqrtS(double sqrtS);
