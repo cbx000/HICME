@@ -6,3 +6,7 @@ HIeB.o: HIeB.cpp sq.h HIeB.hpp
 	g++ -Wall -O -c HIeB.cpp
 sq.o: sq.h sq.c 
 	g++ -Wall -O -c sq.c
+
+clean:
+	rm *.o
+	rm testHIeB
