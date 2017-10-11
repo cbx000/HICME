@@ -9,8 +9,8 @@
 const double alpha_EM = 1.0 / 137.036; // 精细结构常数
 const double m = 0.938272; // 质子质量
 const double hbarc = 197.32696; // hbar * c
-const double mpi = 140.0; // π介子质量
-const double hbarcOverMpiSqure = (hbarc*hbarc)/(mpi*mpi);
+// const double mpi = 140.0; // π介子质量
+// const double hbarcOverMpiSqure = (hbarc*hbarc)/(mpi*mpi);
 
 HIeB::HIeB()
 {
@@ -274,7 +274,7 @@ void HIeB::CalVaccumEB()
         statefile, spin, &neval, &fail, &eBs_minus, &interror, &prob);
   totalerror += interror;
   eBy = eBp_plus + eBp_minus + eBs_plus + eBs_minus;
-  printf(" eBp_plus = %-8g\n eBp_minus = %-8g\n eBs_plus = %-8g\n eBs_minus = %-8g\n", eBp_plus, eBp_minus, eBs_plus, eBs_minus);
+  // printf(" eBp_plus = %-8g\n eBp_minus = %-8g\n eBs_plus = %-8g\n eBs_minus = %-8g\n", eBp_plus, eBp_minus, eBs_plus, eBs_minus);
 
 }
 
