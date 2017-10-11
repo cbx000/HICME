@@ -2,13 +2,14 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <cuba.h>
 #include "HIeB.hpp"
 #include "sq.h"
 
-const double alpha_EM = 1.0 / 137.036; // fine-structure constant
-const double m = 0.938272; // mass of proton
+const double alpha_EM = 1.0 / 137.036; // 精细结构常数
+const double m = 0.938272; // 质子质量
 const double hbarc = 197.32696; // hbar * c
-const double mpi = 140.0; // mass of pion
+const double mpi = 140.0; // π介子质量
 const double hbarcOverMpiSqure = (hbarc*hbarc)/(mpi*mpi);
 
 HIeB::HIeB()
@@ -16,11 +17,11 @@ HIeB::HIeB()
   // 设置默认坐标
   SetSpaceTime(0.0, 0.0, 0.0, 0.1);
   SetSqrtS(200.0); // 设置默认质心系能量
-  
-  ma = 0.5; // 设置快度分布参数
   SetB(8.0); // 设置默认碰撞参量
-  
+  SetTau0(0.1); // 设置默认tau0
   SetNucleiType("Au"); // 设置默认核类型为Au
+  ma = 0.5; // 设置快度分布参数
+  SetMethod(0); // 设置默认计算方法为ellipsoid
 }
 
 void HIeB::SetSpaceTime(double x, double y, double z, double t)
@@ -187,138 +188,303 @@ std::string HIeB::GetNucleiType() const
   return mNucleiType;
 }
 
-/*
-double HIeB::rhoFun_Ai(char flag)
+double HIeB::GetR() const
 {
+  return mR;
+}
+
+double HIeB::GetChargeZ() const
+{
+  return mZ;
+}
+
+double HIeB::GetN0() const
+{
+  return mn0;
+}
+
+double HIeB::GetD() const
+{
+  return md;
+}
+
+double HIeB::GetA() const
+{
+  return ma;
+}
+
+void HIeB::SetMethod(int method)
+{
+  mMethod = method;
+}
+
+int HIeB::GetMethod() const
+{
+  return mMethod;
+}
+
+
+void HIeB::CalVaccumEB()
+{
+  double totalerror;
+  int neval, fail;
+  double interror, prob;
+  double eBp_plus, eBp_minus, eBs_plus, eBs_minus;
+
+  int nvec = 1;
+  double epsrel = 0.01;
+  double epsabs = 0.5;
+  int flags = 0 | 8;
+  int seed = 0;
+  int smineval = 1.5e4;
+  int smaxeval = 4e6;
+  int pmineval = 2e4;
+  int pmaxeval = 1e7;
+  // int mineval = 1e5;
+  // int maxeval = 1e7;
+  int nstart = 1000;
+  int nincrease = 500;
+  int nbatch = 1000;
+  int gridno = 0;
+  char *statefile = NULL;
+  void *spin = NULL;
+  
+  totalerror = 0.0;
+  // 对于“参与者”
+  flag = '+'; // 正向
+  Vegas(4, 1, eB_Part_Int, (void *)this, nvec, epsrel, epsabs, flags, seed,
+        pmineval, pmaxeval, nstart, nincrease, nbatch, gridno,
+        statefile, spin, &neval, &fail, &eBp_plus, &interror, &prob);
+  totalerror += interror;
+  flag = '-'; // 负向
+  Vegas(4, 1, eB_Part_Int, (void *)this, nvec, epsrel, epsabs, flags, seed,
+        pmineval, pmaxeval, nstart, nincrease, nbatch, gridno,
+        statefile, spin, &neval, &fail, &eBp_minus, &interror, &prob);
+  totalerror += interror;
+  
+  // 对于“旁观者”
+  flag = '+'; // 正向
+  Vegas(3, 1, eB_Spec_Int, (void *)this, nvec, epsrel, epsabs, flags, seed,
+        smineval, smaxeval, nstart, nincrease, nbatch, gridno,
+        statefile, spin, &neval, &fail, &eBs_plus, &interror, &prob);
+  totalerror += interror;
+  flag = '-'; // 负向
+  Vegas(3, 1, eB_Spec_Int, (void *)this, nvec, epsrel, epsabs, flags, seed,
+        smineval, smaxeval, nstart, nincrease, nbatch, gridno,
+        statefile, spin, &neval, &fail, &eBs_minus, &interror, &prob);
+  totalerror += interror;
+  eBy = eBp_plus + eBp_minus + eBs_plus + eBs_minus;
+  printf(" eBp_plus = %-8g\n eBp_minus = %-8g\n eBs_plus = %-8g\n eBs_minus = %-8g\n", eBp_plus, eBp_minus, eBs_plus, eBs_minus);
+
+}
+
+
+double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d) {
+  // xp, yp, zp: 源点坐标
+  // 返回: (xp, yp, zp) 处的数密度
+
   double rho;
   double len;
-  double newb = 0.0;
+  double gamma;
+  double sign = 1.0;
+  gamma = cosh(Y0);
+  
+  if (flag == '+') {
+    sign = 1.0; // 左核
+  } else if (flag == '-') {
+    sign = -1.0; // 右核
+  } else {
+    printf("[rhoFun]error: nucleus type(flag) should be '+' or '-'\n");
+  }
 
-  // 判断是左核(+)还是右核(-)
-  if (flag == '+')
-    newb = -mb;
-  else if (flag == '-')
-    newb = mb;
-  else
-    std::cout << "Error: flag must be + or -!\n";
-
-  len = sqrt(Sq(xp - newb/2.0) + Sq(yp) + Sq(mGamma*zp));
-  rho = mGamma * mn0 / (1 + exp((len - mR)/md) ); // 此处乘以gamma是因为密度变大
-
+  len = sqrt(Sq(xp + sign*b/2.0) + Sq(yp) + Sq(gamma*zp));
+  rho = gamma * n0 / ( 1.0 + exp((len-R)/d) ); // 此处乘以gamma是因为密度增加了
+  
   return rho;
 }
-*/
 
- /*
-int eB_Part_Int(const int *ndim, const double xx[], const int *ncomp,
-		      double ff[], void *userdata)
-{
-  double extra = 3.0; // extra is used to expand integral limits, because Woods-Saxon distribution is not precisely in the sphere of R
-  double Imin[4]; // down limits
-  double Imax[4]; // up limits
-
-  Imin[0] = b/2.0 - mR;
-  Imax[0] = -Imin[0];
-  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
-
-  Imin[1] = -sqrt(Sq(mR) - Sq(fabs(xp) + b/2.0));
-  Imax[1] = -Imin[1];
-  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
+double f(double Y, double Y0, double a) {
+  // 参与者的快度分布函数
+  return (a*exp(a*Y)) / (2*sinh(a*Y0));
 }
- */
 
- /*
-int eB_Intgrand(const int *ndim, const double xx[], const int *ncomp,
-		double ff[], void *userdata)
-{
-  int i;
-  double sign, jacobian, extra, rho;
-  double Imin[4];
-  double Imax[4];
-
-  extra = 3.0; // 加上extra是因为wood-saxon分布并不是完全在半径为R的球内
-
-  // 根据被积区域类型和核标记确定积分上下限
-  if (mRegionType == 'p') {
-    Imin[0] = -(mR - b/2.0);
-    Imax[0] = mR - b/2.0;
-    Imin[1] = -sqrt(Sq(mR) - Sq(b/2.0));
-    Imax[1] = sqrt(Sq(mR) - Sq(b/2.0));
-    Imin[2] = -(mR + extra) / mGamma;
-    Imax[2] = (mR + extra) / mGamma;
-    Imin[3] = -mY0;
-    Imax[3] = mY0;
-  } else {
-    // 判断核标记
-    if (mFlag == '+') {
-      Imin[0] = -(mR + b/2.0) - extra;
-      Imax[0] = 0.0;
-      Imin[1] = -mR - extra;
-      Imax[1] = mR + extra;
-      Imin[2] = -(mR+extra) / mGamma;
-      Imax[2] = (mR+extra) / mGamma;
-    } else {
-      Imin[0] = 0.0;
-      Imax[0] = (mR + b/2.0) + extra;
-      Imin[1] = -mR - extra;
-      Imax[1] = mR + extra;
-      Imin[2] = -(mR + extra) / mGamma;
-      Imax[2] = (mR + extra) / mGamma;
-    }
-  }
-
-  // 变量变换 x -> min + (max - min) * x 将积分区间变为0-1
-  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
-  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
-  zp = Imin[2] + (Imax[2] - Imin[2]) * xx[2];
-  if (*ndim == 4)
-    mY = Imin[3] + (Imax[3] - Imin[3]) * xx[3];
-
-  if (mFlag == '+')
-    sign = 1.0;
-  else
-    sign = -1.0;
-
-  rho = rhoFun_Ai();
+int eB_Part_Int(const int *ndim, const double xx[], const int *ncomp,
+			   double ff[], void *userdata) {
+  // ndim是指向积分维度的指针
+  // xx是指向积分变量数组的指针
+  // ncomp是指向积分分量数的指针
+  // ff是指向积分值数组的指针
+  // userdata是指向传递参数数据的指针
+  HIeB *ud = (HIeB *) userdata;
+  double x = ud->GetX();
+  double y = ud->GetY();
+  double z = ud->GetZ();
+  double t = ud->GetT();
+  double Y0 = ud->GetY0();
+  double b = ud->GetB();
+  double R = ud->GetR();
+  double Z = ud->GetChargeZ();
+  char flag = ud->flag;
+  int method = ud->GetMethod();
+  double a = ud->GetA();
+  double n0 = ud->GetN0();
+  double d = ud->GetD();
   
-  if (mRegionType == 'p') {
-    // 判断是否在被积区域内
-    if ( (Sq(xp + b/2.0) + Sq(yp) <= Sq(mR)) &&
-	 (Sq(xp - b/2.0) + Sq(yp) <= Sq(mR)) ) {
-      pointEB_Wangqun(sign);
-      ff[0] = mZ * rho * peBx;
-      ff[1] = mZ * rho * peBy;
-      ff[2] = mZ * rho * peBz;
-    } else {
-      ff[0] = 0.0;
-      ff[1] = 0.0;
-      ff[2] = 0.0;
-    }
-  } else if (mRegionType == 's') {
-    if ( Sq(xp - sign*b/2.0) + Sq(yp) >= Sq(mR) ) {
-      pointEB(sign);
-      ff[0] = mZ * rho * peBx;
-      ff[1] = mZ * rho * peBy;
-      ff[2] = mZ * rho * peBz;
-    } else {
-      ff[0] = 0.0;
-      ff[1] = 0.0;
-      ff[2] = 0.0;
-    }
+  static double sign;
+  static double jacobian;
+  static double denominator;
+
+  static double xp; // 积分变量: x'
+  static double yp; // 积分变量: y'
+  static double zp; // 积分变量: z'
+  static double Y;  // 积分变量: Y
+
+  static double Imin[4]; // 积分下限数组
+  static double Imax[4]; // 积分上限数组
+  static double gamma; // 洛伦兹收缩因子
+  static double extra;
+
+  gamma = cosh(Y0);
+  extra = 3; // extra 是用来略微扩大积分限的，因为 Wood-Saxon 分布不是完全分布在半径为R的球内
+
+  Imin[0] = b/2.0 - R; 
+  Imax[0] = -Imin[0];
+  // x'的上下限: b/2-R <= x' <= -b/2+R
+  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0]; // 对xx[0]进行放缩
+
+  Imin[1] = - sqrt(Sq(R) - Sq(fabs(xp) + b/2.0)); 
+  Imax[1] = -Imin[1];
+  // y'的上下限: -\sqrt{R^2 - (|x| + b/2)^2} <= y' <= \sqrt{R^2 - (|x'| + b/2)^2}
+  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1]; // 对xx[1]进行放缩
+
+  Imin[2] = -(R+extra)/(gamma); 
+  Imax[2] = -Imin[2];
+  // z'的上下限: -R/cosh Y_0 <= z' <=  R/cosh Y_0, 注意gamma = cosh(Y_0)
+  zp = Imin[2] + (Imax[2] - Imin[2]) * xx[2]; // 对xx[2]进行放缩
+
+  Imin[3] = -Y0;
+  Imax[3] = Y0;
+  // Y的上下限: -Y_0 <= Y <= Y_0
+  Y = Imin[3] + (Imax[3] - Imin[3]) * xx[3]; // 对xx[3]进行放缩
+
+  if (flag == '+') 
+     sign = 1.0; // 沿z轴正向
+  else
+     sign = -1.0; // 沿z轴负向
+
+  double temp = 0.0;
+  if (method == 0) {
+    temp = (zp/tanh(Y0) + sign * t )*sinh(Y) - z * cosh(Y);
+  } else if (method == 1) {
+    temp = ( sign * t )*sinh(Y) - z * cosh(Y);
+  } else {
+    printf("Error: method must be 0(ellipsoid) or 1(disklike)");
   }
+  // temp是分母中的第二项
+  
+  denominator = pow(Sq(xp - x) + Sq(yp - y) +
+                    Sq(temp),1.5);
+  ff[0] = sign * Sq(hbarc) * Z * alpha_EM * f(Y, Y0, a) * sinh(Y) * rhoFun(xp, yp, zp, flag, Y0, b, n0, R, d) * (x - xp) / denominator;
+  // 计算被积函数值, 注意Sq(hbarc)是用来转换单位的
 
   jacobian = 1.0;
-  for (i = 0; i < *ndim; i++) {
+  for (int i = 0; i < *ndim; i++) {
     jacobian = jacobian * (Imax[i] - Imin[i]);
   }
-
-  ff[0] *= jacobian;
-  ff[1] *= jacobian;
-  ff[2] *= jacobian;
-
-  return 0;
+  ff[0] = jacobian * ff[0];
+  // 由于积分变量被放缩了，所以结果必须乘以Jacobian
   
+  return 0;
 }
- */
 
+int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp,
+			   double ff[], void *userdata) {
+  // ndim是指向积分维度的指针
+  // xx是指向积分变量数组的指针
+  // ncomp是指向积分分量数的指针
+  // ff是指向积分值数组的指针
+  // userdata是指向传递参数数据的指针
+  
+  HIeB *ud = (HIeB *) userdata;
+  double x = ud->GetX();
+  double y = ud->GetY();
+  double z = ud->GetZ();
+  double t = ud->GetT();
+  double Y0 = ud->GetY0();
+  double b = ud->GetB();
+  double R = ud->GetR();
+  double Z = ud->GetChargeZ();
+  char flag = ud->flag;
+  int method = ud->GetMethod();
+  double n0 = ud->GetN0();
+  double d = ud->GetD();
+  
+  static double sign;
+  static double jacobian;
+  static double denominator;
 
+  static double phip; // 积分变量phi'
+  static double xpperp; // 积分变量x'_\perp
+  static double zp; // 积分变量z'
+  static double xp; 
+  static double yp; 
+
+  static double Imin[3]; // 积分下限数组
+  static double Imax[3]; // 积分上限数组
+  static double gamma; // 洛伦兹收缩因子
+  static double extra;
+
+  gamma = cosh(Y0);
+  extra = 3; // extra 是用来略微扩大积分限的，因为 Wood-Saxon 分布不是完全分布在半径为R的球内
+
+  if (flag == '+') { // 沿z轴正向
+     sign = 1.0; 
+     Imin[0] = M_PI/2.0;
+     Imax[0] = 3.0*M_PI/2.0;
+     // 对正向运动的来说，phi'的上下限: pi/2 <= phi' <= 3pi/2
+     phip = Imin[0] + (Imax[0] - Imin[0]) * xx[0]; // 放缩xx[0]
+  } else { // 沿z轴负向
+     sign = -1.0; 
+     Imin[0] = -M_PI/2.0;
+     Imax[0] = M_PI/2.0;
+     // 对负向运动的来说，phi'的上下限: -pi/2 <= phi' <= pi/2
+     phip = Imin[0] + (Imax[0] - Imin[0]) * xx[0]; // 放缩xx[0]
+  }
+
+  Imin[1] = -b/2.0 * fabs(cos(phip)) + sqrt(Sq(R) - Sq(b)/4.0*Sq(sin(phip)));
+  Imax[1] = b/2.0 * fabs(cos(phip)) + sqrt(Sq(R) - Sq(b)/4.0*Sq(sin(phip)));
+  // x'_\perp的上下限: $-\frac{b}{2}cos(\phi') + \sqrt{R^2 - \frac{b^2}{4} \sin^2(\phi')} \leq x'_\perp \leq \frac{b}{2}cos(\phi') + \sqrt{R^2 - \frac{b^2}{4} \sin^2(\phi')}$
+  xpperp = Imin[1] + (Imax[1] - Imin[1]) * xx[1]; // 放缩xx[1]
+
+  Imin[2] = -(R+extra)/(gamma); 
+  Imax[2] = -Imin[2];
+  // z'的上下限: $-R/\cosh Y_0 \leq z' \leq  R/\cosh Y_0$, note that $\gamma = \cosh(Y_0)$ 
+  zp = Imin[2] + (Imax[2] - Imin[2]) * xx[2]; // 放缩xx[2]
+
+  xp = xpperp * cos(phip);
+  yp = xpperp * sin(phip);
+
+  double temp = 0.0;
+  if (method == 0) {
+    temp = (zp/tanh(Y0) + sign * t )*sinh(Y0) - z * cosh(Y0);
+  } else if (method == 1) {
+    temp = ( sign * t )*sinh(Y0) - z * cosh(Y0);
+  } else {
+    printf("Error: method must be 0(ellipsoid) or 1(disklike)");
+  }
+  // temp是分母的第二项
+  
+  denominator = pow(Sq(xp - x) + Sq(yp - y) +
+                    Sq(temp),1.5);
+  ff[0] = sign * Sq(hbarc) * Z * alpha_EM * sinh(Y0) * xpperp * rhoFun(xp, yp, zp, flag, Y0, b, n0, R, d) * (x - xp) / denominator;
+  // 计算被积函数值, 注意Sq(hbarc)是用来转换单位的
+  
+
+  jacobian = 1.0;
+  for (int i = 0; i < *ndim; i++) {
+    jacobian = jacobian * (Imax[i] - Imin[i]);
+  }
+  ff[0] = jacobian * ff[0];
+  // 由于积分变量被放缩了，所以结果必须乘以Jacobian
+  return 0;
+}

@@ -45,26 +45,32 @@ int main(int argc, char* argv[])
     std::cout << "    sqrtS - 100.0 = " << sqrtS - 100.0
 	      << "    Y0 - 4.6688 = " << gamma - 53.2896 << std::endl;
   }
-
-  /*
-  int i;
-  double sign;
-  myeB.x = 0.0;
-  myeB.y = 0.0;
-  myeB.z = 0.0;
-  myeB.xp = -6.0;
-  myeB.yp = 0.0;
+  myeB.SetSpaceTime(0.0, 0.0, 0.0, 0.1);
   myeB.SetSqrtS(200.0);
-  sign = 1.0;
+  
+  myeB.CalVaccumEB();
+  std::cout << "x = " << myeB.GetX() << std::endl
+  	    << "y = " << myeB.GetY() << std::endl
+  	    << "z = " << myeB.GetZ() << std::endl
+  	    << "t = " << myeB.GetT() << std::endl
+  	    << "eBy = " << myeB.eBy << std::endl;
+  
 
-  std::cout << "gamma = " << myeB.GetGamma() << "\n";
-  std::cout << "sigma = " << myeB.sigma << "\n";
-  std::cout << "sigmaChi = " << myeB.sigmaChi << "\n";
-  std::cout << "v = " << myeB.GetV() << "\n";
-  for (i = 0; i < 100; i++) {
-    myeB.t = i/100.0 * 1.0;
-    myeB.pointEB_Wangqun(sign);
-    std::cout << "t = " << myeB.t << " eBy = " << myeB.GetPointEB(2) << "\n";
-  }
-  */
+  // test eB_Part_Int
+  // int ndim = 4;
+  // double xx[] = {0.4, 0.7, 0.2, 0.6};
+  // int ncomp = 1;
+  // double ff = 0.0;
+  // myeB.flag = '+';
+  // eB_Part_Int(&ndim, xx, &ncomp, &ff, (void *)&myeB);
+  // std::cout << "eB_Part_Int = " << ff << std::endl;
+
+  // test eB_Spec_Int
+  // int ndim2 = 3;
+  // double xx2[] = {0.2, 0.6, 0.4};
+  // myeB.flag = '+';
+  // eB_Spec_Int(&ndim2, xx2, &ncomp, &ff, (void *)&myeB);
+  // std::cout << "eB_Spec_Int = " << ff << std::endl;
+
+  return 0;
 }

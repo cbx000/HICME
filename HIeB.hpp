@@ -9,6 +9,7 @@ class HIeB
 public:
   HIeB();
   double eBx, eBy, eBz; // 重离子碰撞中产生的磁场
+  char flag; // 用来表明核运动方向的变量
   
   // 设置场点的时空坐标
   void SetSpaceTime(double x, double y, double z, double t);
@@ -45,6 +46,19 @@ public:
   void SetNucleiType(std::string nuclei); // method to set nuclei parameters
   std::string GetNucleiType() const; // method to get nuclei name
 
+  // 获取核参数
+  double GetR() const; // 获取半径R
+  double GetChargeZ() const; // 获取电荷量Z
+  double GetN0() const; // 获取n0
+  double GetD() const; // 获取d
+
+  // 获取碰撞后快度分布参数a
+  double GetA() const;
+  
+  // 设置与获取计算方法, ellipsoid为0, disklike为1
+  void SetMethod(int method);
+  int GetMethod() const;
+
   void CalVaccumEB(); // 计算真空磁场
   void CalQGPEB(); // 计算QGP中的磁场
   
@@ -58,6 +72,8 @@ private:
   double mSqrtS; // 质心系能量
   double mY0; // 初始快度
 
+  int mMethod; // 计算方法, ellipsoid为0, disklike为1
+
   // 核参数
   std::string mNucleiType;
   double mR; // 核半径
@@ -67,9 +83,11 @@ private:
   
   double ma; // 碰撞后快度分布参数
 
-  double rhoFun_Ai(); // 核密度分布函数
-
 };
 
+double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d);
+double f(double Y, double Y0, double a);
+int eB_Part_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
+int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 
 #endif
