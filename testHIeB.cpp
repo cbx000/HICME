@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   	    << "t = " << myeB.GetT() << std::endl
         << "eBy = " << myeB.eBy << std::endl;
         
-  myeB.SetSpaceTime_tau(0.2, 0.1);
+  myeB.SetSpaceTime_tau(0.25, 0.1);
   myeB.CalQGPeB();
   std::cout << "x = " << myeB.GetX() << " "
   << "y = " << myeB.GetY() << " "

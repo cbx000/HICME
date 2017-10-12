@@ -1,10 +1,12 @@
 #include <cassert>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cmath>
 #include <cuba.h>
 #include "HIeB.hpp"
 #include "sq.h"
+using namespace std;
 
 const double alpha_EM = 1.0 / 137.036; // 精细结构常数
 const double m = 0.938272; // 质子质量
@@ -312,11 +314,34 @@ void HIeB::CaleBy0(size_t n)
   ETA = (double *)malloc((N) * sizeof(double));
   EBY0 = (double *)malloc((N) * sizeof(double));
 
-  for (int i = 0; i <= n; i++) {
-    ETA[i] = minEta + (double)i*(maxEta - minEta)/(double)N;
-    SetSpaceTime_tau(mtau0, ETA[i]);
-    CalVaccumEB();
-    EBY0[i] = eBy;
+  string filename = mNucleiType + "_" + to_string(mSqrtS) 
+    + "_"+ to_string(mb) + "_"+ to_string(mMethod) +"_"+ to_string(N) +".dat";
+
+  if (ifstream(filename)) { // 如果文件存在，则从文件中读取数据
+    ifstream myfile (filename);
+    if (myfile.is_open()) {
+      for (int i = 0; i <= n; i++) {
+        myfile >> ETA[i];
+        myfile >> EBY0[i];
+      }
+      myfile.close();
+    }
+  } else { // 如果文件不存在，则计算数据，并保存到文件中
+    ofstream myfile (filename);
+    if (myfile.is_open()) {
+      for (int i = 0; i <= n; i++) {
+        printf("\r 正在计算初始磁场: %3.0lf %%", (double)i/n*100.0);
+        ETA[i] = minEta + (double)i*(maxEta - minEta)/(double)N;
+        SetSpaceTime_tau(mtau0, ETA[i]);
+        CalVaccumEB();
+        EBY0[i] = eBy;
+        myfile << ETA[i] << " " << EBY0[i] << endl;
+      }
+      myfile.close();
+    }  else {
+      cout << "无法打开文件" << endl;
+      return;
+    }
   }
 
   spline_steffen = gsl_spline_alloc(gsl_interp_steffen, N);
