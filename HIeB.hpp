@@ -13,11 +13,11 @@ public:
   char flag; // 用来表明核运动方向的变量
   
   // 插值相关变量
-  size_t N; // = 100;
+  size_t N;
   double *ETA;
   double *EBY0;
-  gsl_interp_accel * acc; // = gsl_interp_accel_alloc();
-  gsl_spline *spline_steffen; // = gsl_spline_alloc(gsl_interp_steffen,N );
+  gsl_interp_accel * acc;
+  gsl_spline *spline_steffen;
 
   // 设置场点的时空坐标
   void SetSpaceTime(double x, double y, double z, double t);
