@@ -20,6 +20,7 @@ HIeB::HIeB()
   SetB(8.0); // 设置默认碰撞参量
   SetTau0(0.1); // 设置默认tau0
   mIseBy00cal = 0; // 开始没有计算eBy00
+  mIseBy0cal = 0; // 开始没有计算沿z轴的初始磁场
   mcs2 = 1.0/3.0;
   max2 = Sq(3.0);
   SetNucleiType("Au"); // 设置默认核类型为Au
@@ -299,6 +300,32 @@ void HIeB::CaleBy00()
   SetSpaceTime(x, y, z, t);
 }
 
+void HIeB::CaleBy0(size_t n)
+{
+  double minEta, maxEta;
+  double x = mx, y = my, z = mz, t = mt;
+  minEta = -mY0-0.5;
+  maxEta = mY0+0.5;
+
+  N = n+1;
+
+  ETA = (double *)malloc((N) * sizeof(double));
+  EBY0 = (double *)malloc((N) * sizeof(double));
+
+  for (int i = 0; i <= n; i++) {
+    ETA[i] = minEta + (double)i*(maxEta - minEta)/(double)N;
+    SetSpaceTime_tau(mtau0, ETA[i]);
+    CalVaccumEB();
+    EBY0[i] = eBy;
+  }
+
+  spline_steffen = gsl_spline_alloc(gsl_interp_steffen, N);
+  gsl_spline_init(spline_steffen, ETA, EBY0, N);
+
+  SetSpaceTime(x, y, z, t);
+  mIseBy0cal = 1;
+}
+
 void HIeB::CalOriginQGPeB()
 {
   if (mIseBy00cal != 1) {
@@ -309,10 +336,15 @@ void HIeB::CalOriginQGPeB()
     
 }
 
-// void HIeB::CalQGPeB()
-// {
-  
-// }
+void HIeB::CalQGPeB()
+{
+  if (mIseBy0cal != 1) {
+    HIeB::CaleBy0(100);
+  }
+
+  double cosheta = cosh(meta);
+  eBy = mtau0/mtau*exp(-mcs2/(2.0*max2)*(Sq(mtau) - Sq(mtau0))*Sq(cosheta))*gsl_spline_eval(spline_steffen, meta, acc);
+}
 
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d) {
   // xp, yp, zp: 源点坐标

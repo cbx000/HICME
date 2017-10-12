@@ -3,6 +3,7 @@
 #define HIEBHPP
 
 #include <string>
+#include <gsl/gsl_spline.h>
 
 class HIeB
 {
@@ -11,6 +12,13 @@ public:
   double eBx, eBy, eBz; // 重离子碰撞中产生的磁场
   char flag; // 用来表明核运动方向的变量
   
+  // 插值相关变量
+  size_t N; // = 100;
+  double *ETA;
+  double *EBY0;
+  gsl_interp_accel * acc; // = gsl_interp_accel_alloc();
+  gsl_spline *spline_steffen; // = gsl_spline_alloc(gsl_interp_steffen,N );
+
   // 设置场点的时空坐标
   void SetSpaceTime(double x, double y, double z, double t);
   // 设置场点的时空坐标(以另外一种坐标形式)
@@ -61,6 +69,7 @@ public:
 
   void CalVaccumEB(); // 计算磁场不考虑QGP响应
   void CaleBy00(); // 计算原点初始磁场
+  void CaleBy0(size_t n);  // 计算沿z轴分布的初始磁场
   void CalOriginQGPeB(); // 计算原点磁场考虑QGP响应
   void CalQGPeB(); // 计算磁场考虑QGP响应
   
@@ -69,7 +78,8 @@ private:
   double meta, mtau; // 用eta和tau来表示z和t
   double mtau0; // QGP形成时间
 
-  int mIseBy00cal; // 是否已计算初始磁场, 0为否, 1为是
+  int mIseBy00cal; // 是否已计算原点初始磁场, 0为否, 1为是
+  int mIseBy0cal; // 是否已计算沿z轴的初始磁场, 0为否, 1为是
   double meBy00; // 原点初始磁场
   double mcs2, max2;
 

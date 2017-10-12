@@ -63,7 +63,16 @@ int main(int argc, char* argv[])
   	    << "y = " << myeB.GetY() << " "
   	    << "z = " << myeB.GetZ() << " "
   	    << "t = " << myeB.GetT() << std::endl
-  	    << "eBy = " << myeB.eBy << std::endl;
+        << "eBy = " << myeB.eBy << std::endl;
+        
+  myeB.SetSpaceTime_tau(0.2, 0.1);
+  myeB.CalQGPeB();
+  std::cout << "x = " << myeB.GetX() << " "
+  << "y = " << myeB.GetY() << " "
+  << "z = " << myeB.GetZ() << " "
+  << "t = " << myeB.GetT() << std::endl
+  << "eBy = " << myeB.eBy << std::endl;
+  
   // test eB_Part_Int
   // int ndim = 4;
   // double xx[] = {0.4, 0.7, 0.2, 0.6};
