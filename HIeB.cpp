@@ -19,9 +19,14 @@ HIeB::HIeB()
   SetSqrtS(200.0); // 设置默认质心系能量
   SetB(8.0); // 设置默认碰撞参量
   SetTau0(0.1); // 设置默认tau0
+  mIseBy00cal = 0; // 开始没有计算eBy00
+  mcs2 = 1.0/3.0;
+  max2 = Sq(3.0);
   SetNucleiType("Au"); // 设置默认核类型为Au
   ma = 0.5; // 设置快度分布参数
   SetMethod(0); // 设置默认计算方法为ellipsoid
+
+  
 }
 
 void HIeB::SetSpaceTime(double x, double y, double z, double t)
@@ -278,6 +283,36 @@ void HIeB::CalVaccumEB()
 
 }
 
+
+void HIeB::CaleBy00()
+{
+  double x, y, z, t;
+  x = mx;
+  y = my;
+  z = mz;
+  t = mt;
+  SetSpaceTime(0.0, 0.0, 0.0, mtau0);
+  CalVaccumEB();
+  meBy00 = eBy;
+  mIseBy00cal = 1;
+
+  SetSpaceTime(x, y, z, t);
+}
+
+void HIeB::CalOriginQGPeB()
+{
+  if (mIseBy00cal != 1) {
+    CaleBy00();
+  }
+  
+  eBy = (mtau0 / mtau) * exp(- mcs2/(2.0*max2)*(Sq(mtau) - Sq(mtau0))) * meBy00;
+    
+}
+
+// void HIeB::CalQGPeB()
+// {
+  
+// }
 
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d) {
   // xp, yp, zp: 源点坐标

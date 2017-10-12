@@ -49,13 +49,21 @@ int main(int argc, char* argv[])
   myeB.SetSqrtS(200.0);
   
   myeB.CalVaccumEB();
-  std::cout << "x = " << myeB.GetX() << std::endl
-  	    << "y = " << myeB.GetY() << std::endl
-  	    << "z = " << myeB.GetZ() << std::endl
+  std::cout << "x = " << myeB.GetX() << " "
+  	    << "y = " << myeB.GetY() << " "
+  	    << "z = " << myeB.GetZ() << " "
   	    << "t = " << myeB.GetT() << std::endl
   	    << "eBy = " << myeB.eBy << std::endl;
   
 
+  // 测试QGP响应
+  myeB.SetSpaceTime(0.0, 0.0, 0.0, 0.2);
+  myeB.CalOriginQGPeB();
+  std::cout << "x = " << myeB.GetX() << " "
+  	    << "y = " << myeB.GetY() << " "
+  	    << "z = " << myeB.GetZ() << " "
+  	    << "t = " << myeB.GetT() << std::endl
+  	    << "eBy = " << myeB.eBy << std::endl;
   // test eB_Part_Int
   // int ndim = 4;
   // double xx[] = {0.4, 0.7, 0.2, 0.6};

@@ -59,13 +59,19 @@ public:
   void SetMethod(int method);
   int GetMethod() const;
 
-  void CalVaccumEB(); // 计算真空磁场
-  void CalQGPEB(); // 计算QGP中的磁场
+  void CalVaccumEB(); // 计算磁场不考虑QGP响应
+  void CaleBy00(); // 计算原点初始磁场
+  void CalOriginQGPeB(); // 计算原点磁场考虑QGP响应
+  void CalQGPeB(); // 计算磁场考虑QGP响应
   
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标
   double meta, mtau; // 用eta和tau来表示z和t
   double mtau0; // QGP形成时间
+
+  int mIseBy00cal; // 是否已计算初始磁场, 0为否, 1为是
+  double meBy00; // 原点初始磁场
+  double mcs2, max2;
 
   double mb; // 碰撞参量
   double mGamma; // 洛伦兹收缩因子gamma
