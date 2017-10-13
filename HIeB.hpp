@@ -69,7 +69,7 @@ public:
 
   void CalVaccumEB(); // 计算磁场不考虑QGP响应
   void CaleBy00(); // 计算原点初始磁场
-  void CaleBy0(size_t n);  // 计算沿z轴分布的初始磁场
+  void CaleBy0(int n);  // 计算沿z轴分布的初始磁场
   void CalOriginQGPeB(); // 计算原点磁场考虑QGP响应
   void CalQGPeB(); // 计算磁场考虑QGP响应
   

@@ -302,7 +302,7 @@ void HIeB::CaleBy00()
   SetSpaceTime(x, y, z, t);
 }
 
-void HIeB::CaleBy0(size_t n)
+void HIeB::CaleBy0(int n)
 {
   double minEta, maxEta;
   double x = mx, y = my, z = mz, t = mt;
