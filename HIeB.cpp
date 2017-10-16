@@ -28,8 +28,8 @@ HIeB::HIeB()
   SetNucleiType("Au"); // 设置默认核类型为Au
   ma = 0.5; // 设置快度分布参数
   SetMethod(0); // 设置默认计算方法为ellipsoid
-
-  
+  SetLambda(0.2); // 设置屏蔽长度
+  SetNpm(200.0);
 }
 
 void HIeB::SetSpaceTime(double x, double y, double z, double t)
@@ -302,6 +302,15 @@ void HIeB::CaleBy00()
   SetSpaceTime(x, y, z, t);
 }
 
+double HIeB::GeteBy00()
+{
+  if (mIseBy00cal != 1) {
+    CaleBy00();
+  }
+
+  return meBy00;
+}
+
 void HIeB::CaleBy0(int n)
 {
   double minEta, maxEta;
@@ -369,6 +378,61 @@ void HIeB::CalQGPeB()
 
   double cosheta = cosh(meta);
   eBy = mtau0/mtau*exp(-mcs2/(2.0*max2)*(Sq(mtau) - Sq(mtau0))*Sq(cosheta))*gsl_spline_eval(spline_steffen, meta, acc);
+}
+
+double HIeB::xifun(double xp, double yp, char sign)
+{
+  double y_plus, y_minus;
+  y_plus = sqrt(Sq(mR) - Sq(fabs(xp) + mb/2.0));
+  y_minus = - y_plus;
+  if (sign == '+') {
+    return exp(-fabs(y_plus - yp)/mlambda);
+  } else {
+    return exp(-fabs(y_minus - yp)/mlambda);
+  }
+}
+
+void HIeB::SetLambda(double lambda)
+{
+  mlambda = lambda * mR;
+}
+
+double HIeB::GetLambda()
+{
+  return mlambda;
+}
+
+void HIeB::SetNpm(double npm)
+{
+  mNm = npm;
+  mNp = npm;
+}
+
+double HIeB::GetNp()
+{
+  return mNp;
+}
+
+double HIeB::GetNm()
+{
+  return mNm;
+}
+
+void HIeB::csefun()
+{
+  int nvec = 1, neval, flags = 0 | 8, seed = 0, fail;
+  int mineval = 1e5, maxeval = 1e7, nstart = 1000, nincrease = 500, nbatch = 1000, gridno = 0;
+  char *statefile = NULL;
+  void *spin = NULL;
+  double epsrel = 0.01, epsabs = 0.5, interror, prob;
+  
+  Vegas(3,1,delta_pp_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pp, &interror, &prob);
+  Vegas(3,1,delta_pm_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pm, &interror, &prob);
+  printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
+
+  app = 1.0/Sq(mNp)*Sq(M_PI)/16.0*(delta_pp);
+  apm = 1.0/(mNp*mNm)*Sq(M_PI)/16.0*(delta_pm);
+  printf("a_pp = %g a_pm = %g\n", app, apm);
 }
 
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d) {
@@ -578,5 +642,91 @@ int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp,
   }
   ff[0] = jacobian * ff[0];
   // 由于积分变量被放缩了，所以结果必须乘以Jacobian
+  return 0;
+}
+
+int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
+{
+  HIeB *ud = (HIeB *) userdata;
+  static double b, R, t0, eBy0;
+  b = ud->GetB();
+  R = ud->GetR();
+  t0 = ud->GetTau0();
+  eBy0 = ud->GeteBy00()/Sq(hbarc); // 注意这里要转换单位
+  static double jacobian;
+  static double xp;
+  static double yp;
+  static double tau;
+
+  static double Imin[3];
+  static double Imax[3];
+  static double result;
+  static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0/81.0;
+  static double xi_plus, xi_minus;
+  
+  Imin[0] = b/2.0 - R;
+  Imax[0] = -Imin[0];
+  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
+  Imin[1] = -sqrt(Sq(R) - Sq(fabs(xp) + b/2.0));
+  Imax[1] = -Imin[1];
+  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
+  Imin[2] = t0; // 2.0 * R * exp(-Y0);
+  Imax[2] = 15.0;
+  tau = Imin[2] + (Imax[2] - Imin[2]) * xx[2];
+
+  xi_plus = ud->xifun(xp, yp, '+');
+  xi_minus = ud->xifun(xp, yp, '-');
+
+  result = 2.0 * kappa * alpha_s * sumqf22 * (Sq(xi_plus) + Sq(xi_minus)) * Sq(t0)/ tau * exp(-1.0/27.0 * (Sq(tau) - Sq(t0)) ) * Sq(eBy0);
+
+  jacobian = 1.0;
+  for (int i = 0; i < *ndim; i++) {
+    jacobian = jacobian * (Imax[i] - Imin[i]);
+  }
+  ff[0] = jacobian * result;
+  
+  return 0;
+}
+
+int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
+{
+  HIeB *ud = (HIeB *)userdata;
+  static double b, R, t0, eBy0;
+  b = ud->GetB();
+  R = ud->GetR();
+  t0 = ud->GetTau0();
+  eBy0 = ud->GeteBy00()/Sq(hbarc); // 注意这里要转换单位
+  static double jacobian;
+  static double xp;
+  static double yp;
+  static double tau;
+
+  static double Imin[3];
+  static double Imax[3];
+  static double result;
+  static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0/81.0;
+  static double xi_plus, xi_minus;
+  
+  Imin[0] = b/2.0 - R;
+  Imax[0] = -Imin[0];
+  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
+  Imin[1] = -sqrt(Sq(R) - Sq(fabs(xp) + b/2.0));
+  Imax[1] = -Imin[1];
+  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
+  Imin[2] = t0; // 2.0 * R * exp(-Y0);
+  Imax[2] = 15.0;
+  tau = Imin[2] + (Imax[2] - Imin[2]) * xx[2];
+
+  xi_plus = ud->xifun(xp, yp, '+');
+  xi_minus = ud->xifun(xp, yp, '-');
+
+  result = -4.0 * kappa * alpha_s * sumqf22 * xi_plus * xi_minus * Sq(t0)/ tau * exp(-1.0/27.0 * (Sq(tau) - Sq(t0)) ) * Sq(eBy0);
+
+  jacobian = 1.0;
+  for (int i = 0; i < *ndim; i++) {
+    jacobian = jacobian * (Imax[i] - Imin[i]);
+  }
+  ff[0] = jacobian * result;
+  
   return 0;
 }

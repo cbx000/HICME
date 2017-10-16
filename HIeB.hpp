@@ -10,6 +10,7 @@ class HIeB
 public:
   HIeB();
   double eBx, eBy, eBz; // 重离子碰撞中产生的磁场
+  double apm, app, delta_pm, delta_pp;
   char flag; // 用来表明核运动方向的变量
   
   // 插值相关变量
@@ -69,10 +70,21 @@ public:
 
   void CalVaccumEB(); // 计算磁场不考虑QGP响应
   void CaleBy00(); // 计算原点初始磁场
+  double GeteBy00(); // 获取原点初始磁场
   void CaleBy0(int n);  // 计算沿z轴分布的初始磁场
   void CalOriginQGPeB(); // 计算原点磁场考虑QGP响应
   void CalQGPeB(); // 计算磁场考虑QGP响应
-  
+
+  void SetLambda(double lambda); // 设置屏蔽长度
+  double GetLambda(); // 获取屏蔽长度
+  void SetNpm(double npm); // 设置正负带电粒子数
+  double GetNp(); // 获取正带电粒子数
+  double GetNm(); // 获取负带电粒子数
+  // xi_\pm 函数
+  double xifun(double xp, double yp, char sign);
+
+  void csefun();  // 计算手征磁效应
+
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标
   double meta, mtau; // 用eta和tau来表示z和t
@@ -99,11 +111,16 @@ private:
   
   double ma; // 碰撞后快度分布参数
 
+  double mlambda; // 屏蔽长度
+  double mNp, mNm; // 正负带电粒子数
 };
 
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d);
 double f(double Y, double Y0, double a);
 int eB_Part_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
+
+int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
+int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 
 #endif
