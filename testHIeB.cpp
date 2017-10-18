@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
   << "t = " << myeB.GetT() << std::endl
   << "eBy = " << myeB.eBy << std::endl;
   
-  // 测试 csefun
+  // 测试 cmefun
   myeB.SetNucleiType("Au");
   myeB.SetSqrtS(130.0);
   myeB.SetTau0(0.1393);
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
   myeB.SetNpm(557.6/2.0);
   myeB.SetLambda(0.2);
   myeB.CaleBy00();
-  myeB.csefun();
+  myeB.cmefun();
 
   // test eB_Part_Int
   // int ndim = 4;

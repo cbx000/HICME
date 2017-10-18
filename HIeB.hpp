@@ -83,7 +83,7 @@ public:
   // xi_\pm 函数
   double xifun(double xp, double yp, char sign);
 
-  void csefun();  // 计算手征磁效应
+  void cmefun();  // 计算手征磁效应
 
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标

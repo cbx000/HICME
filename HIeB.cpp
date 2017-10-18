@@ -440,7 +440,7 @@ double HIeB::GetNm()
   return mNm;
 }
 
-void HIeB::csefun()
+void HIeB::cmefun()
 {
   int nvec = 1, neval, flags = 0 | 8, seed = 0, fail;
   int mineval = 1e5, maxeval = 1e7, nstart = 1000, nincrease = 500, nbatch = 1000, gridno = 0;
