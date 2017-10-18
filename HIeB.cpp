@@ -98,6 +98,9 @@ void HIeB::SetSqrtS(double sqrtS)
 
   // 计算对应的洛伦兹收缩因子
   mGamma = cosh(mY0);
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetSqrtS() const
@@ -118,6 +121,9 @@ void HIeB::SetGamma(double gamma)
   V = tanh(mY0); // 速度(自然单位制)
   p = mGamma * m * V;
   mSqrtS = 2.0 * sqrt(m*m + p*p);
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetGamma() const
@@ -138,6 +144,9 @@ void HIeB::SetY0(double Y0)
   V = tanh(mY0);
   p = mGamma * m * V;
   mSqrtS = 2.0 * sqrt(m*m + p*p);
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetY0() const
@@ -148,6 +157,8 @@ double HIeB::GetY0() const
 void HIeB::SetB(double b)
 {
   mb = b;
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetB() const
@@ -158,6 +169,8 @@ double HIeB::GetB() const
 void HIeB::SetTau0(double tau0)
 {
   mtau0 = tau0;
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetTau0() const
@@ -189,6 +202,9 @@ void HIeB::SetNucleiType(std::string nuclei)
   } else {
     printf("Error: undefind nuclei type!");
   }
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 std::string HIeB::GetNucleiType() const
@@ -224,6 +240,9 @@ double HIeB::GetA() const
 void HIeB::SetMethod(int method)
 {
   mMethod = method;
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 int HIeB::GetMethod() const
@@ -395,6 +414,9 @@ double HIeB::xifun(double xp, double yp, char sign)
 void HIeB::SetLambda(double lambda)
 {
   mlambda = lambda * mR;
+
+  mIseBy0cal = 0;
+  mIseBy00cal = 0;
 }
 
 double HIeB::GetLambda()
@@ -426,6 +448,10 @@ void HIeB::csefun()
   void *spin = NULL;
   double epsrel = 0.01, epsabs = 0.5, interror, prob;
   
+  if (mIseBy00cal != 1) {
+    CaleBy00();
+  }
+
   Vegas(3,1,delta_pp_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pp, &interror, &prob);
   Vegas(3,1,delta_pm_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pm, &interror, &prob);
   printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
