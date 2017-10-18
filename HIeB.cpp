@@ -674,11 +674,11 @@ int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp,
 int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
 {
   HIeB *ud = (HIeB *) userdata;
-  static double b, R, t0, eBy0;
+  static double b, R, t0;
   b = ud->GetB();
   R = ud->GetR();
   t0 = ud->GetTau0();
-  eBy0 = ud->GeteBy00()/Sq(hbarc); // 注意这里要转换单位
+  
   static double jacobian;
   static double xp;
   static double yp;
@@ -689,6 +689,8 @@ int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff
   static double result;
   static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0/81.0;
   static double xi_plus, xi_minus;
+
+  static double tempeB;
   
   Imin[0] = b/2.0 - R;
   Imax[0] = -Imin[0];
@@ -703,7 +705,10 @@ int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff
   xi_plus = ud->xifun(xp, yp, '+');
   xi_minus = ud->xifun(xp, yp, '-');
 
-  result = 2.0 * kappa * alpha_s * sumqf22 * (Sq(xi_plus) + Sq(xi_minus)) * Sq(t0)/ tau * exp(-1.0/27.0 * (Sq(tau) - Sq(t0)) ) * Sq(eBy0);
+  ud->SetSpaceTime_tau(tau, 0.0);
+  ud->CalOriginQGPeB();
+  tempeB = ud->eBy/Sq(hbarc); // 注意这里要转换单位
+  result = 2.0 * kappa * alpha_s * sumqf22 * (Sq(xi_plus) + Sq(xi_minus)) * tau * Sq(tempeB);
 
   jacobian = 1.0;
   for (int i = 0; i < *ndim; i++) {
@@ -717,11 +722,11 @@ int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff
 int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
 {
   HIeB *ud = (HIeB *)userdata;
-  static double b, R, t0, eBy0;
+  static double b, R, t0;
   b = ud->GetB();
   R = ud->GetR();
   t0 = ud->GetTau0();
-  eBy0 = ud->GeteBy00()/Sq(hbarc); // 注意这里要转换单位
+  
   static double jacobian;
   static double xp;
   static double yp;
@@ -733,6 +738,8 @@ int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff
   static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0/81.0;
   static double xi_plus, xi_minus;
   
+  static double tempeB;
+
   Imin[0] = b/2.0 - R;
   Imax[0] = -Imin[0];
   xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
@@ -746,7 +753,10 @@ int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff
   xi_plus = ud->xifun(xp, yp, '+');
   xi_minus = ud->xifun(xp, yp, '-');
 
-  result = -4.0 * kappa * alpha_s * sumqf22 * xi_plus * xi_minus * Sq(t0)/ tau * exp(-1.0/27.0 * (Sq(tau) - Sq(t0)) ) * Sq(eBy0);
+  ud->SetSpaceTime_tau(tau, 0.0);
+  ud->CalOriginQGPeB();
+  tempeB = ud->eBy/Sq(hbarc); // 注意这里要转换单位
+  result = -4.0 * kappa * alpha_s * sumqf22 * xi_plus * xi_minus * tau * Sq(tempeB);
 
   jacobian = 1.0;
   for (int i = 0; i < *ndim; i++) {
