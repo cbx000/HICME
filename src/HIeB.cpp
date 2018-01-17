@@ -342,7 +342,7 @@ void HIeB::CaleBy0(int n)
   ETA = (double *)malloc((N) * sizeof(double));
   EBY0 = (double *)malloc((N) * sizeof(double));
 
-  string filename = mNucleiType + "_" + to_string(mSqrtS) 
+  string filename = "data/" + mNucleiType + "_" + to_string(mSqrtS) 
     + "_"+ to_string(mb) + "_"+ to_string(mMethod) +"_"+ to_string(N) +".dat";
 
   if (ifstream(filename)) { // 如果文件存在，则从文件中读取数据

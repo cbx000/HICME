@@ -1,12 +1,17 @@
-testHIeB: testHIeB.o HIeB.o HIeB.hpp HIeB.cpp sq.c sq.h
-	g++ -std=c++0x -Wall -O -o testHIeB testHIeB.o HIeB.o -lcuba -lgsl -lgslcblas -lm
-testHIeB.o: testHIeB.cpp HIeB.hpp 
-	g++ -std=c++0x -Wall -O -c testHIeB.cpp
-HIeB.o: HIeB.cpp sq.h HIeB.hpp
-	g++ -std=c++0x -Wall -O -c HIeB.cpp
-sq.o: sq.h sq.c 
-	g++ -std=c++0x -Wall -O -c sq.c
+VPATH = src:build
+objects = build/testHIeB.o build/HIeB.o build/sq.o
+CFLAGS = -std=c++0x -Wall -O
+LDFLAGS = -lcuba -lgsl -lgslcblas -lm
 
+bin/testHIeB: $(objects)
+	g++ $(CFLAGS) -o $@ $(objects) $(LDFLAGS)
+build/testHIeB.o: testHIeB.cpp HIeB.hpp 
+	g++ $(CFLAGS) -c src/testHIeB.cpp -o $@
+build/HIeB.o: HIeB.cpp sq.h HIeB.hpp
+	g++ $(CFLAGS) -c src/HIeB.cpp -o $@
+build/sq.o: sq.h sq.cpp 
+	g++ $(CFLAGS) -c src/sq.cpp -o $@
+
+.PHONY: clean
 clean:
-	rm *.o
-	rm testHIeB
+	rm bin/testHIeB $(objects)
