@@ -89,12 +89,49 @@ int main(int argc, char* argv[])
   
   myeB.SetSpaceTime_tau(0.25, 0.1);
   myeB.CalQGPeB();
-  std::cout << "x = " << myeB.GetX() << " "
+  cout << "x = " << myeB.GetX() << " "
   << "y = " << myeB.GetY() << " "
   << "z = " << myeB.GetZ() << " "
-  << "t = " << myeB.GetT() << std::endl
-  << "eBy = " << myeB.eBy << std::endl;
+  << "t = " << myeB.GetT() << endl
+  << "eBy = " << myeB.eBy << endl;
   
+  // 测试 SetTau0byCen()
+  cout << "测试SetTau0byCen()函数" << endl;
+  double tau0;
+  myeB.SetNucleiType("Au");
+  myeB.SetSqrtS(200.0);
+  myeB.SetTau0byCen(35.0 , 8.80);
+  tau0 = myeB.GetTau0();
+  cout << "Au-Au sqrts = 200 GeV centrality = 35% tau0 = " << tau0 <<  " ... ";
+  if (fabs(tau0 - 0.162) < 0.001) {
+    cout << "OK";
+  } else {
+    cout << "fail";
+  }
+  cout << endl;
+  myeB.SetNucleiType("Pb");
+  myeB.SetSqrtS(2760.0);
+  myeB.SetTau0byCen(7.5, 4.31);
+  tau0 = myeB.GetTau0();
+  cout << "Pb-Pb sqrts = 2760 GeV centrality = 7.5% tau0 = " << tau0 <<  " ... ";
+  if (fabs(tau0 - 0.095) < 0.001) {
+    cout << "OK";
+  } else {
+    cout << "fail";
+  }
+  cout << endl;
+  myeB.SetNucleiType("Cu");
+  myeB.SetSqrtS(200.0);
+  myeB.SetTau0byCen(15.0, 3.97);
+  tau0 = myeB.GetTau0();
+  cout << "Cu-Cu sqrts = 200 GeV centrality = 15% tau0 = " << tau0 <<  " ... ";
+  if (fabs(tau0 - 0.165) < 0.001) {
+    cout << "OK";
+  } else {
+    cout << "fail";
+  }
+  cout << endl;
+
   // 测试 cmefun
   myeB.SetNucleiType("Au");
   myeB.SetSqrtS(130.0);

@@ -49,6 +49,7 @@ public:
 
   // 设置与获取tau0
   void SetTau0(double tau0);
+  double SetTau0byCen(double cen, double b); // 通过碰撞中心度计算tau0
   double GetTau0() const;
   
   // 设置与获取核类型
@@ -108,6 +109,7 @@ private:
   double md; // 核形状因子
   double mn0; // 归一化常数
   double mZ; // 核电荷数
+  double mA; // 核子数
   
   double ma; // 碰撞后快度分布参数
 

@@ -173,6 +173,28 @@ void HIeB::SetTau0(double tau0)
   mIseBy00cal = 0;
 }
 
+double HIeB::SetTau0byCen(double cen, double b)
+{
+  mb = b;// 之所以在函数参数中要加入b，是为了防止在通过中心度设置tau0时，忘记更新碰撞参数b
+
+  double zeta = 2.0;
+  double tau0_1 = zeta * mR * exp(-mY0);
+
+  double lambda = 0.3; // 注意：这个参数与mlambda的含义完全不一样
+  double A_0 = 197.0;
+  double sqrts_0 = 130.0;
+  double b_0 = 1.611 * pow(cen, 0.4817) - 0.2972;
+  double Qs2_0 = -0.0004779 * pow(b_0, 3.0) - 0.004795 * Sq(b_0) - 0.005726*b_0+2.051;
+  double Qs2 = Qs2_0 * pow(mA/A_0,2.0/(6.0+3.0*lambda)) * pow(mSqrtS/sqrts_0,2.0*lambda/(2.0+lambda));
+  double tau0_2 = 1.0/sqrt(Qs2)*0.1975; // 0.1975 是单位转换因子 
+  if (tau0_2 > tau0_1) {
+    mtau0 = tau0_2;
+  } else {
+    mtau0 = tau0_1;
+  }
+  return mtau0;
+}
+
 double HIeB::GetTau0() const
 {
   return mtau0;
@@ -187,18 +209,21 @@ void HIeB::SetNucleiType(std::string nuclei)
     md = 0.535;
     mn0 = 8.596268e-4;
     mZ = 79.0;
+    mA = 197.0;
   } else if (nuclei == "Pb") {
     mNucleiType = "Pb";
     mR = 6.624;
     md = 0.549;
     mn0 = 7.69244e-4;
     mZ = 82.0;
+    mA = 207.0;
   } else if (nuclei == "Cu"){
     mNucleiType = "Cu";
     mR = 4.214;
     md = 0.586;
     mn0 = 2.67894e-4;
     mZ = 29.0;
+    mA = 63.0;
   } else {
     printf("Error: undefind nuclei type!");
   }
