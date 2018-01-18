@@ -5,7 +5,7 @@
 #include <cmath>
 #include <cuba.h>
 #include "HIeB.hpp"
-#include "sq.h"
+#include "sq.hpp"
 using namespace std;
 
 const double alpha_EM = 1.0 / 137.036; // 精细结构常数
