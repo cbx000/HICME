@@ -192,7 +192,7 @@ double HIeB::SetTau0byCen(double cen, double b)
   } else {
     mtau0 = tau0_1;
   }
-  return mtau0;
+  return Qs2;
 }
 
 double HIeB::GetTau0() const
