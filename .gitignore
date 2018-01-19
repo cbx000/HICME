@@ -1,4 +1,3 @@
 *.dat
 *.o
-testHIeB
-tabgen
+bin/
