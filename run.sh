@@ -3,3 +3,4 @@ mkdir -p data
 make
 ./bin/testHIeB
 ./bin/tabgen
+./bin/eBgen
