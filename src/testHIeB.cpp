@@ -133,14 +133,18 @@ int main(int argc, char* argv[])
   cout << endl;
 
   // 测试 cmefun
+  cout << "测试cmefun()" << endl;
+  myeB.SetMethod(0); // 0 for ellipsoid, 1 for disklike
   myeB.SetNucleiType("Au");
-  myeB.SetSqrtS(130.0);
-  myeB.SetTau0(0.1393);
-  myeB.SetB(2.29);
-  myeB.SetNpm(557.6/2.0);
+  myeB.SetSqrtS(200.0);
+  myeB.SetTau0byCen(7.5, 4.05);
+  myeB.SetNpm(577.6/2.0);
   myeB.SetLambda(0.2);
   myeB.CaleBy00();
   myeB.cmefun();
+  if (fabs(myeB.app - 3.3e-8)<0.1e-8 && fabs(myeB.apm - -2.1e-9)<0.1e-9) {
+    cout << "cmefun() 测试成功" << endl;
+  }
 
   // test eB_Part_Int
   // int ndim = 4;
