@@ -25,55 +25,6 @@ int main(int argc, char *argv[])
     type = 1;
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8Ai.dat", type);
 
-    /*
-    cout << "Pb-Pb collisions, sqrts = 2760 GeV, magnetic field in vaccum generating ... ";
-    myeB.SetNucleiType("Pb");
-    myeB.SetSqrtS(2760.0);
-    myeB.SetB(8.0);
-    tau0 = 0.108;
-    myeB.SetTau0(tau0);
-    myeB.SetMethod(0); // 0 for ellipsoid, 1 for disklike
-
-    ofstream output3("oriPb2760b8Ai.dat");
-    t = 0.0;
-    while (t < 5.0)
-    {
-        myeB.SetSpaceTime(0.0, 0.0, 0.0, t);
-        myeB.CalVaccumEB();
-        output3 << t << ", " << myeB.eBy << endl;
-        t += 0.01;
-    }
-    output3.close();
-    cout << "OK" << endl;
-
-    cout << "Pb-Pb collisions, sqrts = 2760 GeV, magnetic field considering QGP generating ... ";
-    myeB.SetNucleiType("Pb");
-    myeB.SetSqrtS(2760.0);
-    myeB.SetB(8.0);
-    tau0 = 0.108;
-    myeB.SetTau0(tau0);
-    myeB.SetMethod(0); // 0 for ellipsoid, 1 for disklike
-
-    ofstream output4("oriPb2760b8QGP.dat");
-    t = 0.0;
-    while (t < 5.0)
-    {
-        myeB.SetSpaceTime(0.0, 0.0, 0.0, t);
-        if (t <= tau0)
-        {
-            myeB.CalVaccumEB();
-            output4 << t << ", " << myeB.eBy << endl;
-        }
-        else
-        {
-            myeB.CalOriginQGPeB();
-            output4 << t << ", " << myeB.eBy << endl;
-        }
-        t += 0.01;
-    }
-    output4.close();
-    cout << "OK" << endl;
- */
     return 0;
 }
 
