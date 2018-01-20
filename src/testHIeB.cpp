@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
   myeB.SetLambda(0.2);
   myeB.CaleBy00();
   myeB.cmefun();
-  if (fabs(myeB.app - 3.3e-8)<0.1e-8 && fabs(myeB.apm - -2.1e-9)<0.1e-9) {
+  if (fabs(myeB.app - 3.3e-8)<0.1e-8 && fabs(myeB.apm - (-2.1e-9))<0.1e-9) {
     cout << "cmefun() 测试成功" << endl;
   }
 
