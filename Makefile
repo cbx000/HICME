@@ -3,7 +3,9 @@ CFLAGS = -std=c++0x -Wall -O2
 LDFLAGS = -lcuba -lgsl -lgslcblas -lm
 BIN = bin/
 BUILD = build/
-all: bin/tabgen bin/testHIeB bin/eBgen
+all: bin/tabgen bin/testHIeB bin/eBgen bin/cme_ori
+bin/cme_ori: build/cme_ori.o build/HIeB.o build/sq.o $(BIN)
+	g++ $(CFLAGS) -o $@ build/cme_ori.o build/HIeB.o build/sq.o $(LDFLAGS)
 bin/eBgen: build/eBgen.o build/HIeB.o build/sq.o $(BIN)
 	g++ $(CFLAGS) -o $@ build/eBgen.o build/HIeB.o build/sq.o $(LDFLAGS)
 bin/tabgen: build/tabgen.o build/HIeB.o build/sq.o $(BIN)
@@ -11,6 +13,8 @@ bin/tabgen: build/tabgen.o build/HIeB.o build/sq.o $(BIN)
 bin/testHIeB: build/testHIeB.o build/HIeB.o build/sq.o $(BIN)
 	g++ $(CFLAGS) -o $@ build/testHIeB.o build/HIeB.o build/sq.o $(LDFLAGS)
 
+build/cme_ori.o: src/cme_ori.cpp src/HIeB.hpp $(BUILD)
+	g++ $(CFLAGS) -c src/cme_ori.cpp -o $@
 build/eBgen.o: src/eBgen.cpp src/HIeB.hpp $(BUILD)
 	g++ $(CFLAGS) -c src/eBgen.cpp -o $@
 build/tabgen.o: src/tabgen.cpp src/HIeB.hpp $(BUILD) 

@@ -479,11 +479,11 @@ void HIeB::cmefun()
 
   Vegas(3,1,delta_pp_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pp, &interror, &prob);
   Vegas(3,1,delta_pm_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pm, &interror, &prob);
-  printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
+  // printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
 
   app = 1.0/Sq(mNp)*Sq(M_PI)/16.0*(delta_pp);
   apm = 1.0/(mNp*mNm)*Sq(M_PI)/16.0*(delta_pm);
-  printf("a_pp = %g a_pm = %g\n", app, apm);
+  // printf("a_pp = %g a_pm = %g abs(apm)/app = %g\n", app, apm, fabs(apm)/app);
 }
 
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d) {
