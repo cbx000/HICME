@@ -16,7 +16,13 @@ int main(int argc, char *argv[])
     eBgen("Au", sqrts, b, tau0, "data/oriAu200b8Ai.dat", type);
     type = 1; // 1 for considering QGP
     eBgen("Au", sqrts, b, tau0, "data/oriAu200b8QGP.dat", type);
-    
+    b = 7.0;
+    type = 1; // 1 for considering QGP
+    eBgen("Au", sqrts, b, tau0, "data/oriAu200b7QGP.dat", type);
+    b = 6.0;
+    type = 1; // 1 for considering QGP
+    eBgen("Au", sqrts, b, tau0, "data/oriAu200b6QGP.dat", type);
+
     sqrts = 2760.0;
     b = 8.0;
     tau0 = 0.108;
@@ -24,6 +30,8 @@ int main(int argc, char *argv[])
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8Ai.dat", type);
     type = 1; // 1 for considering QGP
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8QGP.dat", type);
+    
+
 
     return 0;
 }
