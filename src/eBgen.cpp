@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
     sqrts = 2760.0;
     b = 8.0;
     tau0 = 0.108;
-    type = 0;
+    type = 0; //  0 for vaccum
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8Ai.dat", type);
-    type = 1;
-    eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8Ai.dat", type);
+    type = 1; // 1 for considering QGP
+    eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8QGP.dat", type);
 
     return 0;
 }
