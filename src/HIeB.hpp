@@ -12,12 +12,12 @@ public:
   double eBx, eBy, eBz; // 重离子碰撞中产生的磁场
   double apm, app, delta_pm, delta_pp;
   char flag; // 用来表明核运动方向的变量
-  
+
   // 插值相关变量
   size_t N;
   double *ETA;
   double *EBY0;
-  gsl_interp_accel * acc;
+  gsl_interp_accel *acc;
   gsl_spline *spline_steffen;
 
   // 设置场点的时空坐标
@@ -32,7 +32,7 @@ public:
   double GetT() const;
   double GetEta() const;
   double GetTau() const;
-  
+
   // 设置与获取质心系能量
   void SetSqrtS(double sqrtS);
   double GetSqrtS() const;
@@ -51,69 +51,69 @@ public:
   void SetTau0(double tau0);
   double SetTau0byCen(double cen, double b); // 通过碰撞中心度计算tau0
   double GetTau0() const;
-  
+
   // 设置与获取核类型
   void SetNucleiType(std::string nuclei); // method to set nuclei parameters
-  std::string GetNucleiType() const; // method to get nuclei name
+  std::string GetNucleiType() const;      // method to get nuclei name
 
   // 获取核参数
-  double GetR() const; // 获取半径R
+  double GetR() const;       // 获取半径R
   double GetChargeZ() const; // 获取电荷量Z
-  double GetN0() const; // 获取n0
-  double GetD() const; // 获取d
+  double GetN0() const;      // 获取n0
+  double GetD() const;       // 获取d
 
   // 获取碰撞后快度分布参数a
   double GetA() const;
-  
+
   // 设置与获取计算方法, ellipsoid为0, disklike为1
   void SetMethod(int method);
   int GetMethod() const;
 
-  void CalVaccumEB(); // 计算磁场不考虑QGP响应
-  void CaleBy00(); // 计算原点初始磁场
-  double GeteBy00(); // 获取原点初始磁场
-  void CaleBy0(int n);  // 计算沿z轴分布的初始磁场
+  void CalVaccumEB();    // 计算磁场不考虑QGP响应
+  void CaleBy00();       // 计算原点初始磁场
+  double GeteBy00();     // 获取原点初始磁场
+  void CaleBy0(int n);   // 计算沿z轴分布的初始磁场
   void CalOriginQGPeB(); // 计算原点磁场考虑QGP响应
-  void CalQGPeB(); // 计算磁场考虑QGP响应
+  void CalQGPeB();       // 计算磁场考虑QGP响应
 
   void SetLambda(double lambda); // 设置屏蔽长度
-  double GetLambda(); // 获取屏蔽长度
-  void SetNpm(double npm); // 设置正负带电粒子数
-  double GetNp(); // 获取正带电粒子数
-  double GetNm(); // 获取负带电粒子数
+  double GetLambda();            // 获取屏蔽长度
+  void SetNpm(double npm);       // 设置正负带电粒子数
+  double GetNp();                // 获取正带电粒子数
+  double GetNm();                // 获取负带电粒子数
   // xi_\pm 函数
   double xifun(double xp, double yp, char sign);
 
-  void cmefun();  // 计算手征磁效应
+  void cmefun(); // 计算手征磁效应
 
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标
-  double meta, mtau; // 用eta和tau来表示z和t
-  double mtau0; // QGP形成时间
+  double meta, mtau;     // 用eta和tau来表示z和t
+  double mtau0;          // QGP形成时间
 
   int mIseBy00cal; // 是否已计算原点初始磁场, 0为否, 1为是
-  int mIseBy0cal; // 是否已计算沿z轴的初始磁场, 0为否, 1为是
-  double meBy00; // 原点初始磁场
+  int mIseBy0cal;  // 是否已计算沿z轴的初始磁场, 0为否, 1为是
+  double meBy00;   // 原点初始磁场
   double mcs2, max2;
 
-  double mb; // 碰撞参量
+  double mb;     // 碰撞参量
   double mGamma; // 洛伦兹收缩因子gamma
   double mSqrtS; // 质心系能量
-  double mY0; // 初始快度
+  double mY0;    // 初始快度
 
   int mMethod; // 计算方法, ellipsoid为0, disklike为1
 
   // 核参数
   std::string mNucleiType;
-  double mR; // 核半径
-  double md; // 核形状因子
+  double mR;  // 核半径
+  double md;  // 核形状因子
   double mn0; // 归一化常数
-  double mZ; // 核电荷数
-  double mA; // 核子数
-  
+  double mZ;  // 核电荷数
+  double mA;  // 核子数
+
   double ma; // 碰撞后快度分布参数
 
-  double mlambda; // 屏蔽长度
+  double mlambda;  // 屏蔽长度
   double mNp, mNm; // 正负带电粒子数
 };
 

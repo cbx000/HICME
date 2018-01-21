@@ -30,8 +30,6 @@ int main(int argc, char *argv[])
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8Ai.dat", type);
     type = 1; // 1 for considering QGP
     eBgen("Pb", sqrts, b, tau0, "data/oriPb2760b8QGP.dat", type);
-    
-
 
     return 0;
 }
@@ -47,12 +45,14 @@ int eBgen(const char Nuclei[], double sqrts, double b, double tau0, const char f
     myeB.SetMethod(0); // 0 for ellipsoid, 1 for disklike
 
     cout << Nuclei << "-" << Nuclei << " collisions, sqrts = " << sqrts << "GeV,";
-    if (type == 0) {
+    if (type == 0)
+    {
         cout << " magnetic field in vaccum generating ... ";
-    } else {
+    }
+    else
+    {
         cout << " magnetic field considering QGP generating ... ";
     }
-     
 
     ofstream output(filename);
     double t = 0.0;

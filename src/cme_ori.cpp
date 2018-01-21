@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     cme_ori("data/Cu200GeV0.1.dat", "Cu", sqrts, 0.1, cen, b_Cu, Npm2_Cu);
     cme_ori("data/Cu200GeV0.2.dat", "Cu", sqrts, 0.2, cen, b_Cu, Npm2_Cu);
     cme_ori("data/Cu200GeV0.3.dat", "Cu", sqrts, 0.3, cen, b_Cu, Npm2_Cu);
-    
+
     return 0;
 }
 
@@ -65,7 +65,7 @@ int cme_ori(const char filename[], const char Nuclei[], double sqrts, double lam
         myeB.SetNpm(Npm2[i] / 2.0);
         myeB.CaleBy00();
         myeB.cmefun();
-        output << myeB.app << ", " << myeB.apm  << ", " << fabs(myeB.apm)/myeB.app << endl;
+        output << myeB.app << ", " << myeB.apm << ", " << fabs(myeB.apm) / myeB.app << endl;
     }
     output.close();
     return 0;
