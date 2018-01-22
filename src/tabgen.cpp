@@ -26,7 +26,9 @@ int main(int argc, char *argv[])
         cen[i] = (cen_l[i] + cen_u[i]) / 2, 0;
     }
     // b data from J. Phys. G: Nucl. Part. Phys. 35 (2008) 125106
-    double b_Au[LEN] = {2.30, 4.05, 5.75, 7.43, 8.80, 9.98, 11.04, 12.03, 12.96};
+    // double b_Au[LEN] = {2.30, 4.05, 5.75, 7.43, 8.80, 9.98, 11.04, 12.03, 12.96};
+    // b data from PRC 79, 034909 (2009)
+    double b_Au[LEN] = {2.21, 4.03, 5.70, 7.37, 8.73, 9.90, 11.0, 11.9, 12.8};
     procfun(filename, Nuclei, sqrts, note, cen_l, cen_u, cen, b_Au, LEN - 2);
 
     // Table 2. Pb-Pb sqrts = 2760 GeV

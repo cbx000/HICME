@@ -21,7 +21,9 @@ int main(int argc, char *argv[])
         cen[i] = (cen_l[i] + cen_u[i]) / 2, 0;
     }
     // b data from J. Phys. G: Nucl. Part. Phys. 35 (2008) 125106
-    double b_Au[LEN] = {2.30, 4.05, 5.75, 7.43, 8.80, 9.98, 11.04, 12.03, 12.96};
+    // double b_Au[LEN] = {2.30, 4.05, 5.75, 7.43, 8.80, 9.98, 11.04, 12.03, 12.96};
+    // b data from PRC 79, 034909 (2009)
+    double b_Au[LEN] = {2.21, 4.03, 5.70, 7.37, 8.73, 9.90, 11.0, 11.9, 12.8};
     double Npm2_Au[LEN] = {705.6, 577.6, 433.5, 291.5, 190.2, 118.5, 69.7, 37.8, 18.7};
 
     cme_ori("data/Au200GeV0.1.dat", "Au", sqrts, 0.1, cen, b_Au, Npm2_Au);
