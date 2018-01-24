@@ -228,7 +228,7 @@ void HIeB::SetNucleiType(std::string nuclei)
     mNucleiType = "Cu";
     mR = 4.214;
     md = 0.586;
-    mn0 = 2.67894e-4;
+    mn0 = 2.67894e-3;
     mZ = 29.0;
     mA = 63.0;
   }
