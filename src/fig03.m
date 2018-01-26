@@ -49,8 +49,8 @@ xlabel('Centrality','FontSize',fontsize)
 ylabel('$H_{\mathrm{SS}}$ or $H_{\mathrm{OS}}$','Interpreter','latex','FontSize',fontsize)
 
 %% compare to Hdiff at RHIC
-Au200HAlpha = 284.122539915; % lambda = 0.3
-Pb2760HAlpha = 55206.8684063 ; % lambda = 0.3
+Au200HAlpha = 379.598509214; % lambda = 0.3
+Pb2760HAlpha = 55490.6144561 ; % lambda = 0.3
 % linewidth = 2;
 % fontsize = 18;
 % markersize = 10;

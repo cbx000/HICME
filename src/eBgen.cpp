@@ -42,7 +42,7 @@ int eBgen(const char Nuclei[], double sqrts, double b, double tau0, const char f
     myeB.SetSqrtS(sqrts);
     myeB.SetB(b);
     myeB.SetTau0(tau0);
-    myeB.SetMethod(0); // 0 for ellipsoid, 1 for disklike
+    myeB.SetMethod(1); // 0 for ellipsoid, 1 for disklike
 
     cout << Nuclei << "-" << Nuclei << " collisions, sqrts = " << sqrts << "GeV,";
     if (type == 0)

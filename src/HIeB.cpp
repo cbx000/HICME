@@ -27,7 +27,7 @@ HIeB::HIeB()
   max2 = Sq(3.0);
   SetNucleiType("Au"); // 设置默认核类型为Au
   ma = 0.5;            // 设置快度分布参数
-  SetMethod(0);        // 设置默认计算方法为ellipsoid
+  SetMethod(1);        // 设置默认计算方法为disklike
   SetLambda(0.2);      // 设置屏蔽长度
   SetNpm(200.0);
 }

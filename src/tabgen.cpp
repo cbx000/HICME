@@ -68,7 +68,7 @@ int procfun(char *filename, char *Nuclei, double sqrts, char *note,
     myeB.SetSqrtS(sqrts);
     out << note << endl;
 
-    myeB.SetMethod(0); // ellipsoid
+    myeB.SetMethod(1); // disklike
 
     for (int i = 0; i < len; i++)
     {

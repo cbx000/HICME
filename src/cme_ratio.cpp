@@ -20,7 +20,7 @@ int cme_ratio(const char filename[], const char Nuclei[], double sqrts, double l
 {
     HIeB myeB;
     ofstream output(filename);
-    myeB.SetMethod(0);  // 0 for ellipsoid, 1 for disklike
+    myeB.SetMethod(1);  // 0 for ellipsoid, 1 for disklike
     myeB.SetNucleiType(Nuclei);
     myeB.SetSqrtS(sqrts);
     myeB.SetLambda(lambda);

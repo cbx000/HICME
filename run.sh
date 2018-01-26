@@ -5,3 +5,4 @@ make
 ./bin/tabgen
 ./bin/eBgen
 ./bin/cme_ori
+./bin/cme_ratio
