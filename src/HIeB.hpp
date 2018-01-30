@@ -84,7 +84,8 @@ public:
   // xi_\pm 函数
   double xifun(double xp, double yp, char sign);
 
-  void cmefun(); // 计算手征磁效应
+  void cmefun(); // 计算手征磁效应,仅考虑原点磁场
+  void cmefun_eta(); // 计算手征磁效应,考虑eta
 
 private:
   double mx, my, mz, mt; // 计算磁场的时空坐标
@@ -123,6 +124,8 @@ int eB_Part_Int(const int *ndim, const double xx[], const int *ncomp, double ff[
 int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 
 int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
+int delta_pp_eta_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
+int delta_pm_eta_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata);
 
 #endif

@@ -43,10 +43,10 @@ Pb2760Hopp = (kappa * Pb2760v2[:,1] * Pb2760deltaopp[:,1] - Pb2760opp[:,1])\
 Au200Hdiff = Au200Hsame - Au200Hopp
 Pb2760Hdiff = Pb2760Hsame - Pb2760Hopp
 
-savetxt('Au200Hsame.txt', Au200Hsame)
-savetxt('Au200Hopp.txt', Au200Hopp)
-savetxt('Pb2760Hsame.txt', Pb2760Hsame)
-savetxt('Pb2760Hopp.txt', Pb2760Hopp)
+savetxt('../data/Au200Hsame.txt', Au200Hsame)
+savetxt('../data/Au200Hopp.txt', Au200Hopp)
+savetxt('../data/Pb2760Hsame.txt', Pb2760Hsame)
+savetxt('../data/Pb2760Hopp.txt', Pb2760Hopp)
 
 # read theory data
 Au20001 = genfromtxt('../data/Au200GeV0.1.dat', delimiter=',')
@@ -56,12 +56,26 @@ Pb276001 = genfromtxt('../data/Pb2760GeV0.1.dat', delimiter=',')
 Pb276002 = genfromtxt('../data/Pb2760GeV0.2.dat', delimiter=',')
 Pb276003 = genfromtxt('../data/Pb2760GeV0.3.dat', delimiter=',')
 
+Au20001_eta = genfromtxt('../data/eta/Au200GeV0.1.dat', delimiter=',')
+Au20002_eta = genfromtxt('../data/eta/Au200GeV0.2.dat', delimiter=',')
+Au20003_eta = genfromtxt('../data/eta/Au200GeV0.3.dat', delimiter=',')
+Pb276001_eta = genfromtxt('../data/eta/Pb2760GeV0.1.dat', delimiter=',')
+Pb276002_eta = genfromtxt('../data/eta/Pb2760GeV0.2.dat', delimiter=',')
+Pb276003_eta = genfromtxt('../data/eta/Pb2760GeV0.3.dat', delimiter=',')
+
 Au20001Diff = Au20001[1:8,0] - Au20001[1:8,1]
 Au20002Diff = Au20002[1:8,0] - Au20002[1:8,1]
 Au20003Diff = Au20003[1:8,0] - Au20003[1:8,1]
 Pb276001Diff = Pb276001[:8,0] - Pb276001[:8,1]
 Pb276002Diff = Pb276002[:8,0] - Pb276002[:8,1]
 Pb276003Diff = Pb276003[:8,0] - Pb276003[:8,1]
+
+Au20001Diff_eta = Au20001_eta[1:8,0] - Au20001_eta[1:8,1]
+Au20002Diff_eta = Au20002_eta[1:8,0] - Au20002_eta[1:8,1]
+Au20003Diff_eta = Au20003_eta[1:8,0] - Au20003_eta[1:8,1]
+Pb276001Diff_eta = Pb276001_eta[:8,0] - Pb276001_eta[:8,1]
+Pb276002Diff_eta = Pb276002_eta[:8,0] - Pb276002_eta[:8,1]
+Pb276003Diff_eta = Pb276003_eta[:8,0] - Pb276003_eta[:8,1]
 
 
 def adjustfun(Hdiff, theDiff):
@@ -83,3 +97,13 @@ print("Pb 2760GeV lambda/R = 0.1, 0.2, 0.3")
 adjustfun(Pb2760Hdiff[:7], Pb276001Diff[:7])
 adjustfun(Pb2760Hdiff[:7], Pb276002Diff[:7])
 adjustfun(Pb2760Hdiff[:7], Pb276003Diff[:7])
+
+print("Au 200GeV considering eta lambda/R = 0.1, 0.2, 0.3")
+adjustfun(Au200Hdiff[:6], Au20001Diff_eta[:6])
+adjustfun(Au200Hdiff[:6], Au20002Diff_eta[:6])
+adjustfun(Au200Hdiff[:6], Au20003Diff_eta[:6])
+
+print("Pb 2760GeV considering eta lambda/R = 0.1, 0.2, 0.3")
+adjustfun(Pb2760Hdiff[:7], Pb276001Diff_eta[:7])
+adjustfun(Pb2760Hdiff[:7], Pb276002Diff_eta[:7])
+adjustfun(Pb2760Hdiff[:7], Pb276003Diff_eta[:7])

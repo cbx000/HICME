@@ -506,6 +506,29 @@ void HIeB::cmefun()
   // printf("a_pp = %g a_pm = %g abs(apm)/app = %g\n", app, apm, fabs(apm)/app);
 }
 
+void HIeB::cmefun_eta()
+{
+  int nvec = 1, neval, flags = 0 | 8, seed = 0, fail;
+  int mineval = 1e5, maxeval = 1e7, nstart = 1000, nincrease = 500, nbatch = 1000, gridno = 0;
+  char *statefile = NULL;
+  void *spin = NULL;
+  double epsrel = 0.01, epsabs = 0.5, interror, prob;
+
+  if (mIseBy0cal != 1)
+  {
+    CaleBy0(100);
+  }
+
+  Vegas(4, 1, delta_pp_eta_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pp, &interror, &prob);
+  Vegas(4, 1, delta_pm_eta_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pm, &interror, &prob);
+  // printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
+
+  app = 1.0 / Sq(mNp) * Sq(M_PI) / 16.0 * (delta_pp);
+  apm = 1.0 / (mNp * mNm) * Sq(M_PI) / 16.0 * (delta_pm);
+  // printf("a_pp = %g a_pm = %g abs(apm)/app = %g\n", app, apm, fabs(apm)/app);
+}
+
+
 double rhoFun(double xp, double yp, double zp, char flag, double Y0, double b, double n0, double R, double d)
 {
   // xp, yp, zp: 源点坐标
@@ -790,6 +813,60 @@ int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff
   return 0;
 }
 
+int delta_pp_eta_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
+{
+  HIeB *ud = (HIeB *)userdata;
+  static double b, R, t0, y0;
+  b = ud->GetB();
+  R = ud->GetR();
+  t0 = ud->GetTau0();
+  y0 = ud->GetY0();
+
+  static double jacobian;
+  static double xp;
+  static double yp;
+  static double tau;
+  static double eta;
+
+  static double Imin[4];
+  static double Imax[4];
+  static double result;
+  static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0 / 81.0;
+  static double xi_plus, xi_minus;
+
+  static double tempeB;
+
+  Imin[0] = b / 2.0 - R;
+  Imax[0] = -Imin[0];
+  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
+  Imin[1] = -sqrt(Sq(R) - Sq(fabs(xp) + b / 2.0));
+  Imax[1] = -Imin[1];
+  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
+  Imin[2] = t0; // 2.0 * R * exp(-Y0);
+  Imax[2] = 15.0;
+  tau = Imin[2] + (Imax[2] - Imin[2]) * xx[2];
+  Imin[3] = -y0; // 对 eta 积分的下限
+  Imax[3] = y0; // 对 eta 积分的上限
+  eta = Imin[3] + (Imax[3] - Imin[3]) * xx[3];
+
+  xi_plus = ud->xifun(xp, yp, '+');
+  xi_minus = ud->xifun(xp, yp, '-');
+
+  ud->SetSpaceTime_tau(tau, eta);
+  ud->CalQGPeB();
+  tempeB = ud->eBy / Sq(hbarc); // 注意这里要转换单位
+  result = 2.0 * kappa * alpha_s * sumqf22 * (Sq(xi_plus) + Sq(xi_minus)) * tau * Sq(tempeB);
+
+  jacobian = 1.0;
+  for (int i = 0; i < *ndim; i++)
+  {
+    jacobian = jacobian * (Imax[i] - Imin[i]);
+  }
+  ff[0] = jacobian * result;
+
+  return 0;
+}
+
 int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
 {
   HIeB *ud = (HIeB *)userdata;
@@ -826,6 +903,60 @@ int delta_pm_Int(const int *ndim, const double xx[], const int *ncomp, double ff
 
   ud->SetSpaceTime_tau(tau, 0.0);
   ud->CalOriginQGPeB();
+  tempeB = ud->eBy / Sq(hbarc); // 注意这里要转换单位
+  result = -4.0 * kappa * alpha_s * sumqf22 * xi_plus * xi_minus * tau * Sq(tempeB);
+
+  jacobian = 1.0;
+  for (int i = 0; i < *ndim; i++)
+  {
+    jacobian = jacobian * (Imax[i] - Imin[i]);
+  }
+  ff[0] = jacobian * result;
+
+  return 0;
+}
+
+int delta_pm_eta_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
+{
+  HIeB *ud = (HIeB *)userdata;
+  static double b, R, t0, y0;
+  b = ud->GetB();
+  R = ud->GetR();
+  t0 = ud->GetTau0();
+  y0 = ud->GetY0();
+
+  static double jacobian;
+  static double xp;
+  static double yp;
+  static double tau;
+  static double eta;
+
+  static double Imin[4];
+  static double Imax[4];
+  static double result;
+  static double kappa = 1.0, alpha_s = 1.0, sumqf22 = 25.0 / 81.0;
+  static double xi_plus, xi_minus;
+
+  static double tempeB;
+
+  Imin[0] = b / 2.0 - R;
+  Imax[0] = -Imin[0];
+  xp = Imin[0] + (Imax[0] - Imin[0]) * xx[0];
+  Imin[1] = -sqrt(Sq(R) - Sq(fabs(xp) + b / 2.0));
+  Imax[1] = -Imin[1];
+  yp = Imin[1] + (Imax[1] - Imin[1]) * xx[1];
+  Imin[2] = t0; // 2.0 * R * exp(-Y0);
+  Imax[2] = 15.0;
+  tau = Imin[2] + (Imax[2] - Imin[2]) * xx[2];
+  Imin[3] = -y0; // 对 eta 积分的下限
+  Imax[3] = y0; // 对 eta 积分的上限
+  eta = Imin[3] + (Imax[3] - Imin[3]) * xx[3];
+
+  xi_plus = ud->xifun(xp, yp, '+');
+  xi_minus = ud->xifun(xp, yp, '-');
+
+  ud->SetSpaceTime_tau(tau, eta);
+  ud->CalQGPeB();
   tempeB = ud->eBy / Sq(hbarc); // 注意这里要转换单位
   result = -4.0 * kappa * alpha_s * sumqf22 * xi_plus * xi_minus * tau * Sq(tempeB);
 

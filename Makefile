@@ -3,7 +3,9 @@ CFLAGS = -std=c++0x -Wall -O2
 LDFLAGS = -lcuba -lgsl -lgslcblas -lm
 BIN = bin/
 BUILD = build/
-all: bin/tabgen bin/testHIeB bin/eBgen bin/cme_ori bin/cme_ratio
+all: bin/tabgen bin/testHIeB bin/eBgen bin/cme_ori bin/cme_ratio bin/cme_eta
+bin/cme_eta: build/cme_eta.o build/HIeB.o build/sq.o $(BIN)
+	g++ $(CFLAGS) -o $@ build/cme_eta.o build/HIeB.o build/sq.o $(LDFLAGS)
 bin/cme_ratio: build/cme_ratio.o build/HIeB.o build/sq.o $(BIN)
 	g++ $(CFLAGS) -o $@ build/cme_ratio.o build/HIeB.o build/sq.o $(LDFLAGS)
 bin/cme_ori: build/cme_ori.o build/HIeB.o build/sq.o $(BIN)
@@ -15,6 +17,8 @@ bin/tabgen: build/tabgen.o build/HIeB.o build/sq.o $(BIN)
 bin/testHIeB: build/testHIeB.o build/HIeB.o build/sq.o $(BIN)
 	g++ $(CFLAGS) -o $@ build/testHIeB.o build/HIeB.o build/sq.o $(LDFLAGS)
 
+build/cme_eta.o: src/cme_eta.cpp src/HIeB.hpp $(BUILD)
+	g++ $(CFLAGS) -c src/cme_eta.cpp -o $@
 build/cme_ratio.o: src/cme_ratio.cpp src/HIeB.hpp $(BUILD)
 	g++ $(CFLAGS) -c src/cme_ratio.cpp -o $@
 build/cme_ori.o: src/cme_ori.cpp src/HIeB.hpp $(BUILD)
