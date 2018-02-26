@@ -16,14 +16,17 @@ Cu20001 = csvread('../data/Cu200GeV0.1.dat',1,0);
 Cu20002 = csvread('../data/Cu200GeV0.2.dat',1,0);
 Cu20003 = csvread('../data/Cu200GeV0.3.dat',1,0);
 
+linewidth = 2;
+fontsize = 18;
+markersize = 10;
 
 %% compare Au Cu Hdiff at RHIC
 Au200HAlpha = 379.598509214; % lambda = 0.3
 figure
 hold on
 box on
-plot(1:7,(Au20003(1:7,1) - Au20003(1:7,2))*Au200HAlpha,'-or','LineWidth',linewidth)
-plot(1:7,(Cu20003(1:7,1) - Cu20003(1:7,2))*Au200HAlpha,'-ob','LineWidth',linewidth)
+plot(1:7,(Au20003(1:7,1) - Au20003(1:7,2))*Au200HAlpha,'-or','LineWidth',linewidth,'MarkerSize',8)
+plot(1:7,(Cu20003(1:7,1) - Cu20003(1:7,2))*Au200HAlpha,'-^b','LineWidth',linewidth,'MarkerSize',8)
 set(gca,'linewidth',2);
 legend({'Au-Au $200\,\mathrm{GeV}$ Theory','Cu-Cu $200\,\mathrm{GeV}$ Theory'},...
     'Interpreter','latex','Location','northwest')
