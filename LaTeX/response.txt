@@ -1,0 +1,20 @@
+We have modified the paper as requested by the reviewer:
+1)	We added collision system and beam energy in the caption of Figure 4 and corresponding main body.
+2)	We changed the marks in Figure 5 according to the reviewer’s request.
+3)	The paper’s English has been modified in many places, the specific changes are as follows:
+	a)	However, the lifetime of the magnetic field will become longer when considering the QGP medium response --> However, the lifetime of the magnetic field will become longer when the QGP medium response is considered.
+	b)	Firstly, quantum chromodynamics (QCD) which describe the behavior of the QGP… --> Firstly, quantum chromodynamics (QCD) which describes the behavior of the QGP…
+	c)	This is due to the statistical fluctuations… --> This is due to the fact that statistical fluctuations…
+	d)	One proposed to measure charge separation fluctuations… --> One proposed to measure the charge separation fluctuations
+	e)	… qualitatively consistent with the expectation of the CME.--> … qualitatively consistent with the theoretical expectation of the CME.
+	f)	The coefficient κ is close to but deviates from, unity owing to… --> The coefficient κ is close to but deviates from unity owing to…
+	g)	… is the flux through a configuration of size ρ with none-zero Qw. --> … is the flux through a configuration of size ρ with non-zero Qw.
+	h)	We use the same symbols defined in Ref. [1], … --> We use the same symbols defined in Ref. [1]. …
+	i)	using the fact that ρ ∼ (Γ±/αS)−1=4 ∼ 1/(αST) and the transition rate Eq. (5), and given as follows --> using the Eq. (5) for transition rate and the fact that ρ ∼ (Γ±/αS)−1=4 ∼ 1/(αST). They are given as follows
+	j)	There is also a constant κ which should be of order one --> There is also a constant κ for which the order of magnitude should be one
+	k)	However, in this model the v2 related backgrounds are completely ignored --> However, in this model the v2-related backgrounds are completely ignored
+	l)	… the Skokov’s result with the conductivity is set by lattice QCD calculation --> … the Skokov’s result with the conductivity set by lattice QCD calculation
+	m)	but it deviates from experiment at periphery collision --> but it deviates from the experiment at periphery collision
+	n)	The reason for it falls at periphery collisions are as follows. --> The reasons for its fall at periphery collisions are as follows.
+	o)	We plot the centrality dependence of |a+−|/a++ for different screening length in Fig. 4 --> We plot the centrality dependence of |a+−|/a++ with different screening length for Au-Au collisions at √s = 200GeV in Fig. 4
+	p)	This result is mainly because, at the same centrality, … --> The main reason for this result is that, at the same centrality, …
