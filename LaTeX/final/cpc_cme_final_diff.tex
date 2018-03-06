@@ -1,7 +1,4 @@
 \documentclass[a4paper,10pt,twoside]{cpc-hepnp}
-%DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL cpc_cme_final_old.tex   Tue Mar  6 10:07:52 2018
-%DIF ADD cpc_cme_final.tex       Tue Mar  6 10:08:27 2018
 
 \usepackage{multicol}
 \usepackage{graphicx}
@@ -15,7 +12,9 @@
 \usepackage{float}
 \usepackage{physics}
 \usepackage{color}
-\usepackage{ulem}
+%DIF < \usepackage{ulem}
+%DIF -------
+ %DIF > 
 %DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
 %DIF UNDERLINE PREAMBLE %DIF PREAMBLE
 \RequirePackage[normalem]{ulem} %DIF PREAMBLE
@@ -34,47 +33,6 @@
 \providecommand{\DIFaddendFL}{} %DIF PREAMBLE
 \providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
 \providecommand{\DIFdelendFL}{} %DIF PREAMBLE
-\newcommand{\DIFscaledelfig}{0.5}
-%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
-\RequirePackage{settobox} %DIF PREAMBLE
-\RequirePackage{letltxmacro} %DIF PREAMBLE
-\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
-\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
-\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
-% store original definition of \includegraphics %DIF PREAMBLE
-\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
-\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
-\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
-\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
-\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
-\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
-\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
-\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
-\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
-\begin{picture}(1,1)% %DIF PREAMBLE
-\thicklines\linethickness{2pt} %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
-\end{picture}% %DIF PREAMBLE
-}\hspace*{3pt}}} %DIF PREAMBLE
-} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
 %DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
 
 \begin{document}
@@ -107,7 +65,7 @@ $^3$ School of Physics and Technology, Wuhan University, Wuhan 430072, China}
 
 
 \begin{abstract}
-The magnetic field plays a major role in the searching of the chiral magnetic effect in relativistic heavy-ion collisions. If the lifetime of the magnetic field is too short, as expected by simulations of the field in the vacuum, the chiral magnetic effect will be largely suppressed. However, the lifetime of the magnetic field will become longer when the QGP medium response is considered. We give an estimate of the effect, especially considering the magnetic field response of the QGP medium, and compare it with the experimental results of background-subtracted correlator $H$ at RHIC and LHC energies. The results show that our method explains better for the experimental results at the top  RHIC energy than that of the LHC energy.
+The magnetic field plays a major role in the searching of the chiral magnetic effect in relativistic heavy-ion collisions. If the lifetime of the magnetic field is too short, as expected by simulations of the field in the vacuum, the chiral magnetic effect will be largely suppressed. However, the lifetime of the magnetic field will become longer when the QGP medium response is \DIFdelbegin \DIFdel{considerd}\DIFdelend \DIFaddbegin \DIFadd{considered}\DIFaddend . We give an estimate of the effect, especially considering the magnetic field response of the QGP medium, and compare it with the experimental results of background-subtracted correlator $H$ at RHIC and LHC energies. The results show that our method explains better for the experimental results at the top  RHIC energy than that of the LHC energy.
 \end{abstract}
 
 \begin{keyword}
@@ -132,7 +90,7 @@ The interplay of quantum anomaly and magnetic field leads to a lot of macroscopi
 The question is whether the CME exists in relativistic heavy-ion collisions. The answer seems to be yes. Two necessary conditions, chirality imbalance, and magnetic field may be met in QGP produced in relativistic heavy-ion collisions. Firstly, quantum chromodynamics (QCD) which describes the behavior of the QGP permits topological charge changing transition that can induce chirality imbalance\cite{Kharzeev:2007jp}. Secondly, \DIFaddbegin \DIFadd{an }\DIFaddend enormous magnetic field can be produced in non-central relativistic heavy-ion collisions due to charged nucleus moving at speed close to the speed of light\cite{Skokov:2009qp,Voronyuk:2011jd,Bzdak:2011yy,Deng:2012pc,Tuchin:2013apa,Mo:2013qya}. Therefore, the CME is very likely to exist in relativistic heavy-ion collisions.
 
 Over the past few years, much effort has been given to the search of the experimental evidence of the CME in relativistic heavy-ion collisions. Several collaborations at the BNL Relativistic Heavy Ion Collider (RHIC), and the CERN Large Hadron Collider (LHC), including STAR\cite{Abelev2009ac, Abelev:2009ad, Voloshin:2008jx, PhysRevC.88.064911, Wang:2012qs, Adamczyk:2014mzf, Adamczyk:2013kcb}, PHENIX\cite{Ajitanand:2010}, and ALICE\cite{Christakoglou:2011uqg,PhysRevLett.110.012301} have studied this; for recent reviews see Refs.~\cite{Wang:2016mkm}.
-\DIFaddbegin 
+\DIFaddbegin 
 
 \DIFaddend At first glance, it seems easy to detect the CME experimentally. In fact, this is not the case. Firstly, one cannot identify the charge asymmetry in an individual event as the sign of the CME. This is due to the fact that statistical fluctuations $\sim \sqrt{N}$ is much larger than the expected charge asymmetry induced by the CME, where $N$ is the charged-particle multiplicity of produced particles\cite{Kharzeev:2007jp}. However, if one takes an average over many events directly, the contributions of the CME will also be canceled out, since the right-handed and left-handed chirality is produced with equal probability.
 
