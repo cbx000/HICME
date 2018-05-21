@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     double cen[LEN];
     for (int i = 0; i < LEN; i++)
     {
-        cen[i] = (cen_l[i] + cen_u[i]) / 2, 0;
+        cen[i] = (cen_l[i] + cen_u[i]) / 2.0;
     }
     // b data from J. Phys. G: Nucl. Part. Phys. 35 (2008) 125106
     // double b_Au[LEN] = {2.30, 4.05, 5.75, 7.43, 8.80, 9.98, 11.04, 12.03, 12.96};

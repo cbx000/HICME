@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     // 计算中心度区间的中间值
     for (int i = 0; i < LEN; i++)
     {
-        cen[i] = (cen_l[i] + cen_u[i]) / 2, 0;
+        cen[i] = (cen_l[i] + cen_u[i]) / 2.0;
     }
 
     //  计算Au-Au碰撞，质心系能量为 200 GeV 的手征磁效应
