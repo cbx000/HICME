@@ -411,10 +411,9 @@ void HIeB::CaleBy0(int n)
       return;
     }
   }
-
-  spline_steffen = gsl_spline_alloc(gsl_interp_steffen, N);
-  gsl_spline_init(spline_steffen, ETA, EBY0, N);
-
+  
+  
+  
   SetSpaceTime(x, y, z, t);
   mIseBy0cal = 1;
 }
@@ -435,9 +434,19 @@ void HIeB::CalQGPeB()
   {
     HIeB::CaleBy0(100);
   }
-
+  gsl_interp_accel *acc = gsl_interp_accel_alloc();
+  spline_steffen = gsl_spline_alloc(gsl_interp_steffen, N);
+  gsl_spline_init(spline_steffen, ETA, EBY0, N);
+  for (int i = 0; i <= 100; i++)
+  {
+   meta=ETA[i];
+   etaeB=gsl_spline_eval(spline_steffen, meta, acc); 
+  }
+  gsl_spline_free(spline_steffen);
+  gsl_interp_accel_free(acc);
   double cosheta = cosh(meta);
-  eBy = mtau0 / mtau * exp(-mcs2 / (2.0 * max2) * (Sq(mtau) - Sq(mtau0)) * Sq(cosheta)) * gsl_spline_eval(spline_steffen, meta, acc);
+  eBy = (mtau0 / mtau )* exp(-mcs2 / (2.0 * max2) * (Sq(mtau) - Sq(mtau0)) * Sq(cosheta)) *etaeB;
+  printf("eBy= %g\n", eBy);
 }
 
 double HIeB::xifun(double xp, double yp, char sign)
@@ -521,11 +530,11 @@ void HIeB::cmefun_eta()
 
   Vegas(4, 1, delta_pp_eta_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pp, &interror, &prob);
   Vegas(4, 1, delta_pm_eta_Int, (void *)this, nvec, epsrel, epsabs, flags, seed, mineval, maxeval, nstart, nincrease, nbatch, gridno, statefile, spin, &neval, &fail, &delta_pm, &interror, &prob);
-  // printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
+  printf("delta_pp = %g delta_pm = %g\n", delta_pp, delta_pm);
 
   app = 1.0 / Sq(mNp) * Sq(M_PI) / 16.0 * (delta_pp);
   apm = 1.0 / (mNp * mNm) * Sq(M_PI) / 16.0 * (delta_pm);
-  // printf("a_pp = %g a_pm = %g abs(apm)/app = %g\n", app, apm, fabs(apm)/app);
+  printf("a_pp = %g a_pm = %g abs(apm)/app = %g\n", app, apm, fabs(apm)/app);
 }
 
 
@@ -748,9 +757,7 @@ int eB_Spec_Int(const int *ndim, const double xx[], const int *ncomp,
   }
   // temp是分母的第二项
 
-  denominator = pow(Sq(xp - x) + Sq(yp - y) +
-                        Sq(temp),
-                    1.5);
+  denominator = pow(Sq(xp - x) + Sq(yp - y) + Sq(temp),1.5);
   ff[0] = sign * Sq(hbarc) * Z * alpha_EM * sinh(Y0) * xpperp * rhoFun(xp, yp, zp, flag, Y0, b, n0, R, d) * (x - xp) / denominator;
   // 计算被积函数值, 注意Sq(hbarc)是用来转换单位的
 
@@ -815,6 +822,7 @@ int delta_pp_Int(const int *ndim, const double xx[], const int *ncomp, double ff
 
 int delta_pp_eta_Int(const int *ndim, const double xx[], const int *ncomp, double ff[], void *userdata)
 {
+  printf("delta_pp_eta_Int");
   HIeB *ud = (HIeB *)userdata;
   static double b, R, t0, y0;
   b = ud->GetB();
