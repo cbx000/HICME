@@ -17,6 +17,8 @@ public:
   size_t N;
   double *ETA;
   double *EBY0;
+  double etaeB;
+  double metaa;
   gsl_interp_accel *acc;
   gsl_spline *spline_steffen;
 
